@@ -37,7 +37,7 @@ class MainApp(MDApp):
                 if not MainApp.camera_started:
                     stereoCamera = StereoCamera()
                     MainApp.camera_started = True
-                if StereoCamera.cameras_reading and not StereoCamera.synchronization_queue.empty():
+                if StereoCamera.cameras_reading.value and not StereoCamera.synchronization_queue.empty():
                     frame = StereoCamera.synchronization_queue.get()
                     self.update_image(frame)
             #except:
@@ -64,20 +64,20 @@ class MainApp(MDApp):
             self.right_layout.add_widget(self.bottom_panel)
             AppDesign.log_app_event(self, "Connection!")
         #try:
-            frame = cv2.resize(frame,
-                               (int((self.image.height * 64) / 48),
-                                int(self.image.height)),
-                               interpolation=cv2.INTER_LANCZOS4)
+        frame = cv2.resize(frame,
+                           (int((self.image.height * 64) / 48),
+                            int(self.image.height)),
+                           interpolation=cv2.INTER_LANCZOS4)
 
-            buffer = cv2.flip(frame, 0).tobytes()
-            texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
-            texture.blit_buffer(buffer, colorfmt='bgr', bufferfmt='ubyte')
-            self.image.texture = texture
-        #except:
-            #MainApp.app_errors.append("Connection with camera has been closed!")
-            if MainApp.app_errors:
-                self.show_error_dialog()
-            self.update_camera_log()
+        buffer = cv2.flip(frame, 0).tobytes()
+        texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
+        texture.blit_buffer(buffer, colorfmt='bgr', bufferfmt='ubyte')
+        self.image.texture = texture
+    #except:
+        #MainApp.app_errors.append("Connection with camera has been closed!")
+        if MainApp.app_errors:
+            self.show_error_dialog()
+        self.update_camera_log()
 
     @mainthread
     def check_camera_errors(self):
@@ -96,14 +96,14 @@ class MainApp(MDApp):
     def switch_camera_mode(self, instance):
         if self.button_camera_all.state == 'down':
             self.button_camera_all.state = 'down'
-            StereoCamera.receive_RGB = StereoCamera.receive_IR = True
+            StereoCamera.receive_RGB.value = StereoCamera.receive_IR.value = True
         else:
-            StereoCamera.receive_RGB, StereoCamera.receive_IR = self.button_camera_RGB.state == 'down', self.button_camera_IR.state == 'down'
+            StereoCamera.receive_RGB.value, StereoCamera.receive_IR.value = self.button_camera_RGB.state == 'down', self.button_camera_IR.state == 'down'
 
     def switch_recording(self, instance):
-        if StereoCamera.cameras_reading:
-            StereoCamera.recording = not StereoCamera.recording
-            if StereoCamera.recording:
+        if StereoCamera.cameras_reading.value:
+            StereoCamera.recording.value = not StereoCamera.recording.value
+            if StereoCamera.recording.value:
                 self.button_record.icon = 'stop-circle-outline'
                 Clock.schedule_interval(self.update_record, 1)
             else:
@@ -150,7 +150,7 @@ class MainApp(MDApp):
 
 
     def switch_detection_mode(self, detection, detection_boxes, detection_labels):
-        StereoCamera.detection, StereoCamera.detection_boxes, StereoCamera.detection_labels =\
+        StereoCamera.detection.value, StereoCamera.detection_boxes.value, StereoCamera.detection_labels.value =\
             detection, detection_boxes, detection_labels
 
     def switch_theme_mode(self, instance, state):
