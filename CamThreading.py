@@ -5,7 +5,7 @@ from multiprocessing import Queue
 from datetime import datetime
 import time
 
-from TensorflowLiteDetection import DetectionModel, preprocess_image, detection, draw_boxes, draw_boxes_and_labels
+#from TensorflowLiteDetection import DetectionModel, preprocess_image, detection, draw_boxes, draw_boxes_and_labels
 
 
 class StereoCamera():
@@ -57,11 +57,11 @@ class StereoCamera():
         StereoCamera.thread_IR.start()
         StereoCamera.thread_synchronization.start()
 
-        StereoCamera.detection_model = DetectionModel()
+        #StereoCamera.detection_model = DetectionModel()
 
 
 def resize_and_map(name, frameToCalibrate, stereoMap_x, stereoMap_y):
-    try:
+    #try:
         resize = cv2.resize(frameToCalibrate, (640, 488), interpolation=cv2.INTER_LANCZOS4)
         frame_mapped = cv2.remap(resize, stereoMap_x, stereoMap_y, cv2.INTER_LANCZOS4, cv2.BORDER_CONSTANT, 0)
         if name == "RGB":
@@ -72,8 +72,8 @@ def resize_and_map(name, frameToCalibrate, stereoMap_x, stereoMap_y):
             frame_mapped = frame_mapped[0:488 - 70, 0:640 - 80]
             frame_mapped = cv2.resize(frame_mapped, (640, 488), interpolation=cv2.INTER_AREA)
         return frame_mapped
-    except:
-        StereoCamera.camera_errors.append("Cound not resize frame!")
+    #except:
+        #StereoCamera.camera_errors.append("Cound not resize frame!")
 
 
 class SynchronizationThread(threading.Thread):
@@ -88,14 +88,14 @@ class SynchronizationThread(threading.Thread):
 def synchronization():
     while True:
         if StereoCamera.camera_RGB and StereoCamera.camera_IR:
-            try:
+            #try:
                 StereoCamera.cameras_reading = True
                 frame_IR = StereoCamera.video_queue_IR.get()
                 frame_RGB = StereoCamera.video_queue_RGB.get()
-            except:
-                StereoCamera.camera_errors.append("Could not get IR or RGB frame for synchronization!")
+            #except:
+                #StereoCamera.camera_errors.append("Could not get IR or RGB frame for synchronization!")
 
-            try:
+            #try:
                 frame_IR = cv2.cvtColor(frame_IR, cv2.COLOR_BGR2GRAY)
                 frame_IR = cv2.bilateralFilter(frame_IR, 30, 15, 15)
                 frame_IR = cv2.bitwise_not(frame_IR)
@@ -104,38 +104,39 @@ def synchronization():
                 combined_frame = cv2.cvtColor(combined_frame, cv2.COLOR_GRAY2BGR)
                 frame_IR = cv2.cvtColor(frame_IR, cv2.COLOR_GRAY2BGR)
                 frame_RGB = cv2.cvtColor(frame_RGB, cv2.COLOR_GRAY2BGR)
-            except:
-                StereoCamera.camera_errors.append("Image preprocess error!")
+            #except:
+                #StereoCamera.camera_errors.append("Image preprocess error!")
 
-            if StereoCamera.detection:
+                if StereoCamera.detection:
+                    pass
                 # try:
-                    image_det, image_orig = preprocess_image(combined_frame)
-                    output_data = detection(image_det, StereoCamera.detection_model.interpreter,
-                                            StereoCamera.detection_model.input_details,
-                                            StereoCamera.detection_model.output_details)
-                    if StereoCamera.detection_labels:
-                        image_orig = draw_boxes_and_labels(output_data, image_orig)
-                    elif StereoCamera.detection_boxes:
-                        image_orig = draw_boxes(output_data, image_orig)
-                    combined_frame = cv2.resize(image_orig, (640, 488), interpolation=cv2.INTER_LANCZOS4)
+                #     image_det, image_orig = preprocess_image(combined_frame)
+                #     output_data = detection(image_det, StereoCamera.detection_model.interpreter,
+                #                             StereoCamera.detection_model.input_details,
+                #                             StereoCamera.detection_model.output_details)
+                #     if StereoCamera.detection_labels:
+                #         image_orig = draw_boxes_and_labels(output_data, image_orig)
+                #     elif StereoCamera.detection_boxes:
+                #         image_orig = draw_boxes(output_data, image_orig)
+                #     combined_frame = cv2.resize(image_orig, (640, 488), interpolation=cv2.INTER_LANCZOS4)
                 # except:
                 #     StereoCamera.camera_errors.append("Detection error!")
-            try:
+            #try:
                 if StereoCamera.receive_RGB and StereoCamera.receive_IR:
                     StereoCamera.synchronization_queue.put(combined_frame)
                 elif StereoCamera.receive_IR:
                     StereoCamera.synchronization_queue.put(frame_IR)
                 elif StereoCamera.receive_RGB:
                     StereoCamera.synchronization_queue.put(frame_RGB)
-            except:
-                StereoCamera.camera_errors.append("Could not send image to application!")
-            if StereoCamera.recording:
-                try:
+            #except:
+                #StereoCamera.camera_errors.append("Could not send image to application!")
+                if StereoCamera.recording:
+                #try:
                     frame_record_time = datetime.utcnow().strftime('%Y-%m-%d_%H-%M-%S-%f')[:-3]
                     StereoCamera.recorded_frames_RGB.append([frame_RGB, frame_record_time])
                     StereoCamera.recorded_frames_IR.append([frame_IR, frame_record_time])
-                except:
-                    StereoCamera.camera_errors.append("Could not record frames!")
+                #except:
+                   # StereoCamera.camera_errors.append("Could not record frames!")
 
 
 class CamThread(threading.Thread):
@@ -148,7 +149,7 @@ class CamThread(threading.Thread):
         self.stereo_map_y = stereo_map_y
 
     def run(self):
-        try:
+        #try:
             StereoCamera.camera_log.append("Starting " + self.name)
             if self.name == "RGB":
                 cam = cv2.VideoCapture(self.cam_id, cv2.CAP_DSHOW)
@@ -157,8 +158,8 @@ class CamThread(threading.Thread):
             else:
                 cam = None
             cam_view(cam, self.name, self.stereo_map_x, self.stereo_map_y)
-        except:
-            StereoCamera.camera_errors.append("Could not start " + self.name + " thread!")
+        #except:
+           # StereoCamera.camera_errors.append("Could not start " + self.name + " thread!")
 
 
 def cam_view(cam, name, stereo_map_x, stereo_map_y):
@@ -180,17 +181,17 @@ def cam_view(cam, name, stereo_map_x, stereo_map_y):
 
 def put_frame(name, frame):
     StereoCamera.synchronization_lock.acquire()
-    try:
-        if name == "IR" and StereoCamera.camera_reading_RGB:
+    #try:
+    if name == "IR" and StereoCamera.camera_reading_RGB:
             StereoCamera.camera_IR = True
             StereoCamera.camera_reading_RGB = False
             StereoCamera.video_queue_IR.put(frame)
             StereoCamera.camera_reading_IR = True
-        elif name == "RGB" and StereoCamera.camera_reading_IR:
+    elif name == "RGB" and StereoCamera.camera_reading_IR:
             StereoCamera.camera_RGB = True
             StereoCamera.camera_reading_IR = False
             StereoCamera.video_queue_RGB.put(frame)
             StereoCamera.camera_reading_RGB = True
-    except:
-        StereoCamera.camera_errors.append(name + " frame put error!")
+    #except:
+        #StereoCamera.camera_errors.append(name + " frame put error!")
     StereoCamera.synchronization_lock.release()

@@ -33,17 +33,17 @@ class MainApp(MDApp):
 
     def load_video(self):
         while True:
-            try:
+            #try:
                 if not MainApp.camera_started:
                     stereoCamera = StereoCamera()
                     MainApp.camera_started = True
                 if StereoCamera.cameras_reading and not StereoCamera.synchronization_queue.empty():
                     frame = StereoCamera.synchronization_queue.get()
                     self.update_image(frame)
-            except:
-                MainApp.app_errors.append("Error loading frame from stereo cameras!")
-            if not MainApp.error_dialog:
-                self.check_camera_errors()
+            #except:
+                #MainApp.app_errors.append("Error loading frame from stereo cameras!")
+                if not MainApp.error_dialog:
+                    self.check_camera_errors()
 
     def build(self):
         self.screen = generate_app_design(self)
@@ -63,7 +63,7 @@ class MainApp(MDApp):
             self.right_layout.add_widget(self.image)
             self.right_layout.add_widget(self.bottom_panel)
             AppDesign.log_app_event(self, "Connection!")
-        try:
+        #try:
             frame = cv2.resize(frame,
                                (int((self.image.height * 64) / 48),
                                 int(self.image.height)),
@@ -73,11 +73,11 @@ class MainApp(MDApp):
             texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
             texture.blit_buffer(buffer, colorfmt='bgr', bufferfmt='ubyte')
             self.image.texture = texture
-        except:
-            MainApp.app_errors.append("Connection with camera has been closed!")
-        if MainApp.app_errors:
-            self.show_error_dialog()
-        self.update_camera_log()
+        #except:
+            #MainApp.app_errors.append("Connection with camera has been closed!")
+            if MainApp.app_errors:
+                self.show_error_dialog()
+            self.update_camera_log()
 
     @mainthread
     def check_camera_errors(self):
