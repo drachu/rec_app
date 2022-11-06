@@ -7,6 +7,7 @@ from kivymd.theming import ThemeManager
 from kivy.uix.image import Image
 from kivy.graphics.texture import Texture
 from kivy.clock import Clock, mainthread
+from multiprocessing import Process
 import threading
 import cv2
 
@@ -23,37 +24,14 @@ class MainApp(MDApp):
     camera_started = False
     record_time = 0
 
-    class VideoThread(threading.Thread):
-        def __init__(self, app_self):
-            threading.Thread.__init__(self)
-            self.app_self = app_self
-
-        def run(self):
-            self.app_self.load_video()
-
-    def load_video(self):
-        while True:
-            #try:
-                if not MainApp.camera_started:
-                    stereoCamera = StereoCamera()
-                    MainApp.camera_started = True
-                if StereoCamera.cameras_reading.value and not StereoCamera.synchronization_queue.empty():
-                    frame = StereoCamera.synchronization_queue.get()
-                    self.update_image(frame)
-            #except:
-                #MainApp.app_errors.append("Error loading frame from stereo cameras!")
-                if not MainApp.error_dialog:
-                    self.check_camera_errors()
 
     def build(self):
         self.screen = generate_app_design(self)
-        videoThread = self.VideoThread(app_self=self)
-        videoThread.daemon = True
-        videoThread.start()
+        Clock.schedule_interval(self.update_image, 1/30)
         return self.screen
 
     @mainthread
-    def update_image(self, frame):
+    def update_image(self, instance):
         if self.loading.active:
             self.loading.active = False
             self.right_layout.padding = 0
@@ -63,16 +41,21 @@ class MainApp(MDApp):
             self.right_layout.add_widget(self.image)
             self.right_layout.add_widget(self.bottom_panel)
             AppDesign.log_app_event(self, "Connection!")
-        #try:
-        frame = cv2.resize(frame,
-                           (int((self.image.height * 64) / 48),
-                            int(self.image.height)),
-                           interpolation=cv2.INTER_LANCZOS4)
+        if not MainApp.camera_started:
+            MainApp.camera_started = True
+        if StereoCamera.cameras_reading.value and not StereoCamera.synchronization_queue.empty():
+            frame = StereoCamera.synchronization_queue.get()
+            frame = cv2.resize(frame,
+                               (int((self.image.height * 64) / 48),
+                                int(self.image.height)),
+                               interpolation=cv2.INTER_LANCZOS4)
 
-        buffer = cv2.flip(frame, 0).tobytes()
-        texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
-        texture.blit_buffer(buffer, colorfmt='bgr', bufferfmt='ubyte')
-        self.image.texture = texture
+            buffer = cv2.flip(frame, 0).tobytes()
+            texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
+            texture.blit_buffer(buffer, colorfmt='bgr', bufferfmt='ubyte')
+            self.image.texture = texture
+        #try:
+
     #except:
         #MainApp.app_errors.append("Connection with camera has been closed!")
         if MainApp.app_errors:
@@ -190,4 +173,5 @@ class MainApp(MDApp):
 
 
 if __name__ == '__main__':
+    stereoCamera = StereoCamera()
     MainApp().run()
