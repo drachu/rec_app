@@ -4,56 +4,69 @@ from zipfile import ZipFile
 
 from kivymd.app import MDApp
 from kivymd.theming import ThemeManager
-from kivy.uix.image import Image
 from kivy.graphics.texture import Texture
 from kivy.clock import Clock, mainthread
-from multiprocessing import Process
 import threading
 import cv2
 
 import AppDesign
 from CamThreading import StereoCamera
-from AppDesign import generate_app_design, generate_bottom_panel, create_error_dialog, create_information_dialog
+from AppDesign import generate_app_design, create_error_dialog
 
 
 class MainApp(MDApp):
     app_errors = []
     error_dialog = None
-    info_dialog = None
     theme_cls = ThemeManager()
     camera_started = False
     record_time = 0
 
+    class VideoThread(threading.Thread):
+        def __init__(self, app_self):
+            threading.Thread.__init__(self)
+            self.app_self = app_self
+
+        def run(self):
+            self.app_self.load_video()
+
+    def load_video(self):
+        while True:
+            # try:
+                if not MainApp.camera_started:
+                    stereoCamera = StereoCamera()
+                    MainApp.camera_started = True
+                if StereoCamera.cameras_reading and not StereoCamera.synchronization_queue.empty():
+                    frame = StereoCamera.synchronization_queue.get()
+                    self.update_image(frame)
+            # except:
+            #     MainApp.app_errors.append("Error loading frame from stereo cameras!")
+                if not MainApp.error_dialog:
+                    self.check_camera_errors()
 
     def build(self):
         self.screen = generate_app_design(self)
-        Clock.schedule_interval(self.update_image, 1/30)
+        videoThread = self.VideoThread(self)
+        videoThread.daemon = True
+        videoThread.start()
         return self.screen
 
     @mainthread
-    def update_image(self, instance):
+    def update_image(self, frame):
         if self.loading.active:
             self.loading.active = False
+            self.loading.size_hint = (0, 0)
             self.right_layout.padding = 0
-            self.right_layout.remove_widget(self.loading)
-            self.image = Image()
-            self.bottom_panel = generate_bottom_panel(self)
-            self.right_layout.add_widget(self.image)
-            self.right_layout.add_widget(self.bottom_panel)
+            self.bottom_card.size_hint = (1, 0.2)
             AppDesign.log_app_event(self, "Connection!")
-        if not MainApp.camera_started:
-            MainApp.camera_started = True
-        if StereoCamera.cameras_reading.value and not StereoCamera.synchronization_queue.empty():
-            frame = StereoCamera.synchronization_queue.get()
-            frame = cv2.resize(frame,
-                               (int((self.image.height * 64) / 48),
-                                int(self.image.height)),
-                               interpolation=cv2.INTER_LANCZOS4)
+        frame = cv2.resize(frame,
+                            (int((self.image.height * 64) / 48),
+                            int(self.image.height)),
+                            interpolation=cv2.INTER_LANCZOS4)
 
-            buffer = cv2.flip(frame, 0).tobytes()
-            texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
-            texture.blit_buffer(buffer, colorfmt='bgr', bufferfmt='ubyte')
-            self.image.texture = texture
+        buffer = cv2.flip(frame, 0).tobytes()
+        texture = Texture.create(size=(frame.shape[1], frame.shape[0]), colorfmt='bgr')
+        texture.blit_buffer(buffer, colorfmt='bgr', bufferfmt='ubyte')
+        self.image.texture = texture
         #try:
 
     #except:
@@ -156,13 +169,10 @@ class MainApp(MDApp):
         MainApp.error_dialog = None
 
     def show_info_dialog(self, instance):
-        if not self.info_dialog:
-            self.info_dialog = create_information_dialog(self)
-            self.info_dialog.open()
+        self.info_dialog.open()
 
     def close_info_dialog(self, instance):
         self.info_dialog.dismiss()
-        self.info_dialog = None
 
     def try_restart_camera(self, instance):
         try:
@@ -173,5 +183,4 @@ class MainApp(MDApp):
 
 
 if __name__ == '__main__':
-    stereoCamera = StereoCamera()
     MainApp().run()

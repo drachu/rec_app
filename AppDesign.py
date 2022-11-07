@@ -112,7 +112,7 @@ class MyToggleButton(MDFlatButton, MDToggleButton):
 
 
 def generate_bottom_panel(self):
-    self.bottom_card = MDCard(size_hint=(1, 0.2), radius=20, elevation=3)
+    self.bottom_card = MDCard(size_hint=(0, 0), radius=20, elevation=3)
     self.bottom_layout = MDGridLayout(cols=2, padding=20, spacing=20)
 
     self.camera_mode_layout = MDGridLayout(cols=3, radius=20, spacing=5,
@@ -217,6 +217,7 @@ def generate_app_design(self):
     self.layout.spacing = 20
 
     self.loading = MDSpinner(active=True,  size_hint=(1, 1))
+    self.info_dialog = create_information_dialog(self)
 
     self.right_layout = MDGridLayout()
     self.right_layout.cols = 1
@@ -228,5 +229,10 @@ def generate_app_design(self):
     self.layout.add_widget(self.left_card)
     self.layout.add_widget(self.right_layout)
     self.screen.add_widget(self.layout)
+
+    self.image = Image()
+    self.bottom_panel = generate_bottom_panel(self)
+    self.right_layout.add_widget(self.image)
+    self.right_layout.add_widget(self.bottom_panel)
 
     return self.screen

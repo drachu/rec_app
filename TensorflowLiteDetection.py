@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
-import tensorflow as tf
-
+import tflite_runtime.interpreter as tflite
 
 class DetectionModel():
 
@@ -17,7 +16,7 @@ class DetectionModel():
 
 
 def initialize_interpreter(path):
-    _interp = tf.lite.Interpreter(model_path=path)
+    _interp = tflite.make_interpreter(path)
     _interp.allocate_tensors()
     _input_det = _interp.get_input_details()
     _output_det = _interp.get_output_details()
