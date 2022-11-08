@@ -1,4 +1,6 @@
 import shutil
+
+from kivy.clock import mainthread
 from kivymd.material_resources import dp
 from kivymd.uix.behaviors.toggle_behavior import MDToggleButton
 from kivymd.uix.boxlayout import MDBoxLayout
@@ -98,7 +100,7 @@ def log_camera_event(self, event_text):
         IconLeftWidget(icon='camera', icon_size=dp(20)),
         text=event_text, font_style='Caption'))
 
-
+@mainthread
 def log_app_event(self, event_text):
     self.log_list.add_widget(OneLineIconListItem(
         IconLeftWidget(icon='application-cog-outline', icon_size=dp(20)),
@@ -112,7 +114,7 @@ class MyToggleButton(MDFlatButton, MDToggleButton):
 
 
 def generate_bottom_panel(self):
-    self.bottom_card = MDCard(size_hint=(0, 0), radius=20, elevation=3)
+    self.bottom_card = MDCard(size_hint=(1, 0.2), radius=20, elevation=3)
     self.bottom_layout = MDGridLayout(cols=2, padding=20, spacing=20)
 
     self.camera_mode_layout = MDGridLayout(cols=3, radius=20, spacing=5,
@@ -174,7 +176,7 @@ def create_error_dialog(self, camera_errors, app_errors):
 def create_information_dialog(self):
     self.information_dialog = None
     self.information_dialog = MDDialog(buttons=[MDRaisedButton(text="Close", on_press=self.close_info_dialog)],
-                                       type='custom', size_hint=(0.75, 0.75),
+                                       type='custom', size_hint=(0.90, 0.90),
                                        content_cls=MDBoxLayout(
                                           MDLabel(text="This application was designed to support pedestrian detection as part of the engineering diploma project \"" \
                                                        "Pedestrian detection software using multimodal imaging and machine learning\". After starting the application, the loading animation should end with showing the image from the cameras."
@@ -216,14 +218,12 @@ def generate_app_design(self):
     self.layout.pos_hint = {"center_x": 0.5, "center_y": 0.5}
     self.layout.spacing = 20
 
-    self.loading = MDSpinner(active=True,  size_hint=(1, 1))
     self.info_dialog = create_information_dialog(self)
 
     self.right_layout = MDGridLayout()
     self.right_layout.cols = 1
     self.right_layout.spacing = 20
-    self.right_layout.padding = 200
-    self.right_layout.add_widget(self.loading)
+    self.right_layout.padding = 0
 
     self.left_card = generate_left_card(self)
     self.layout.add_widget(self.left_card)

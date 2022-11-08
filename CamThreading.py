@@ -5,6 +5,7 @@ from multiprocessing import Queue, Value, Process
 from datetime import datetime
 from ctypes import c_bool
 import time
+import platform
 
 #from TensorflowLiteDetection import DetectionModel, preprocess_image, detection, draw_boxes, draw_boxes_and_labels
 
@@ -43,10 +44,15 @@ class StereoCamera():
         StereoCamera.stereo_map_RGB_y = cv_file.getNode('stereoMapRGB_y').mat()
         StereoCamera.stereo_map_IR_x = cv_file.getNode('stereoMapThermal_x').mat()
         StereoCamera.stereo_map_IR_y = cv_file.getNode('stereoMapThermal_y').mat()
-
-        thread_RGB = CamThread("RGB", 1, StereoCamera.stereo_map_RGB_x, StereoCamera.stereo_map_RGB_y)
+        if platform.system() == "Windows":
+            id_RGB = 1
+            id_IR = 2
+        else:
+            id_RGB = 2
+            id_IR = 1
+        thread_RGB = CamThread("RGB", id_RGB, StereoCamera.stereo_map_RGB_x, StereoCamera.stereo_map_RGB_y)
         thread_RGB.daemon = True
-        thread_IR = CamThread("IR", 2, StereoCamera.stereo_map_IR_x, StereoCamera.stereo_map_IR_y)
+        thread_IR = CamThread("IR", id_IR, StereoCamera.stereo_map_IR_x, StereoCamera.stereo_map_IR_y)
         thread_IR.daemon = True
         thread_synchronization = SynchronizationThread()
         thread_synchronization.daemon = True
@@ -76,15 +82,13 @@ def resize_and_map(name, frameToCalibrate, stereoMap_x, stereoMap_y):
 
 class SynchronizationThread(Process):
     def __init__(self):
-        Process.__init__(self, target=synchronization, args=(StereoCamera.camera_reading_RGB, StereoCamera.camera_reading_IR, StereoCamera.camera_RGB,
+        Process.__init__(self, target=synchronization, args=(StereoCamera.camera_RGB,
         StereoCamera.camera_IR, StereoCamera.receive_RGB, StereoCamera.receive_IR, StereoCamera.recording,
-        StereoCamera.detection, StereoCamera.detection_boxes, StereoCamera.detection_labels,
-        StereoCamera.cameras_reading, StereoCamera.synchronization_queue, StereoCamera.video_queue_IR,
-        StereoCamera.video_queue_RGB))
+        StereoCamera.detection, StereoCamera.cameras_reading, StereoCamera.synchronization_queue,
+        StereoCamera.video_queue_IR, StereoCamera.video_queue_RGB))
 
 
-def synchronization(camera_reading_RGB, camera_reading_IR, camera_RGB,
-                    camera_IR, receive_RGB, receive_IR, recording, detection, detection_boxes, detection_labels,
+def synchronization(camera_RGB, camera_IR, receive_RGB, receive_IR, recording, detection,
                     cameras_reading, synchronization_queue, video_queue_IR, video_queue_RGB):
     while True:
         if camera_RGB.value and camera_IR.value:
@@ -144,9 +148,7 @@ class CamThread(Process):
     def __init__(self, name, cam_id, stereo_map_x, stereo_map_y):
         Process.__init__(self, target=cam_view, args=(cam_id, name, stereo_map_x, stereo_map_y,
         StereoCamera.camera_reading_RGB, StereoCamera.camera_reading_IR, StereoCamera.camera_RGB,
-        StereoCamera.camera_IR, StereoCamera.receive_RGB, StereoCamera.receive_IR, StereoCamera.recording,
-        StereoCamera.detection, StereoCamera.detection_boxes, StereoCamera.detection_labels,
-        StereoCamera.cameras_reading, StereoCamera.synchronization_queue, StereoCamera.video_queue_IR,
+        StereoCamera.camera_IR, StereoCamera.video_queue_IR,
         StereoCamera.video_queue_RGB))
         self.name = name
         self.cam_id = cam_id
@@ -154,15 +156,12 @@ class CamThread(Process):
         self.stereo_map_y = stereo_map_y
 
 def cam_view(cam_id, name, stereo_map_x, stereo_map_y, camera_reading_RGB, camera_reading_IR, camera_RGB,
-             camera_IR, receive_RGB, receive_IR, recording, detection, detection_boxes, detection_labels,
-             cameras_reading, synchronization_queue, video_queue_IR, video_queue_RGB):
+             camera_IR, video_queue_IR, video_queue_RGB):
     StereoCamera.camera_log.append("Starting " + name)
-    if name == "RGB":
+    if name == "RGB" and platform.system() == "Windows":
         cam = cv2.VideoCapture(cam_id, cv2.CAP_DSHOW)
-    elif name == "IR":
-        cam = cv2.VideoCapture(cam_id)
     else:
-        cam = None
+        cam = cv2.VideoCapture(cam_id)
     if cam.isOpened():  # try to get the first frame
         StereoCamera.camera_log.append(name + " camera found!")
         rval, frame = cam.read()
@@ -173,7 +172,7 @@ def cam_view(cam_id, name, stereo_map_x, stereo_map_y, camera_reading_RGB, camer
 
     while rval:
         rval, frame = cam.read()
-        if name == "RGB":
+        if name == "RGB" and platform.system() == "Windows":
             time.sleep(1.0 / 8.7)
         frame = resize_and_map(name, frame, stereo_map_x, stereo_map_y)
         put_frame(name, frame, camera_reading_RGB, camera_reading_IR, camera_IR, camera_RGB, video_queue_IR, video_queue_RGB)

@@ -35,6 +35,7 @@ class MainApp(MDApp):
                 if not MainApp.camera_started:
                     stereoCamera = StereoCamera()
                     MainApp.camera_started = True
+                    AppDesign.log_app_event(self, "Connection!")
                 if StereoCamera.cameras_reading and not StereoCamera.synchronization_queue.empty():
                     frame = StereoCamera.synchronization_queue.get()
                     self.update_image(frame)
@@ -52,12 +53,6 @@ class MainApp(MDApp):
 
     @mainthread
     def update_image(self, frame):
-        if self.loading.active:
-            self.loading.active = False
-            self.loading.size_hint = (0, 0)
-            self.right_layout.padding = 0
-            self.bottom_card.size_hint = (1, 0.2)
-            AppDesign.log_app_event(self, "Connection!")
         frame = cv2.resize(frame,
                             (int((self.image.height * 64) / 48),
                             int(self.image.height)),
