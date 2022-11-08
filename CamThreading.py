@@ -101,7 +101,8 @@ def synchronization(camera_RGB, camera_IR, receive_RGB, receive_IR, recording, d
 
             #try:
                 frame_IR = cv2.cvtColor(frame_IR, cv2.COLOR_BGR2GRAY)
-                frame_IR = cv2.bilateralFilter(frame_IR, 30, 15, 15)
+                if platform.system() == "Windows":
+                    frame_IR = cv2.bilateralFilter(frame_IR, 30, 15, 15)
                 frame_IR = cv2.bitwise_not(frame_IR)
                 frame_RGB = cv2.cvtColor(frame_RGB, cv2.COLOR_BGR2GRAY)
                 combined_frame = cv2.addWeighted(frame_RGB, 0.3, frame_IR, 0.7, 0.0)
