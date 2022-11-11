@@ -5,9 +5,8 @@ from tensorflow import lite
 
 EDGETPU_SHARED_LIB = {
   'Linux': 'libedgetpu.so.1',
-  'Darwin': 'libedgetpu.1.dylib',
   'Windows': 'edgetpu.dll'
-}[platform.system()]
+}
 
 class DetectionModel():
 
@@ -23,7 +22,7 @@ class DetectionModel():
 
 
 def initialize_interpreter(path):
-    _interp = lite.Interpreter(path, experimental_delegates=[lite.experimental.load_delegate('libedgetpu.so.1')])
+    _interp = lite.Interpreter(path, experimental_delegates=[lite.experimental.load_delegate(EDGETPU_SHARED_LIB[platform.system()])])
     _interp.allocate_tensors()
     _input_det = _interp.get_input_details()
     _output_det = _interp.get_output_details()
