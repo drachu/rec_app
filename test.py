@@ -1,11 +1,11 @@
 import cv2
 
-import TensorflowLiteDetection
+import DetectionEdgeTPU
 
 # cam = cv2.VideoCapture(2)
 # ret, frame = cam.read()
 #
-from TensorflowLiteDetection import *
+from DetectionEdgeTPU import *
 model = TensorflowLiteDetection.DetectionModel()
 # while ret:
 #     ref, frame = cam.read()

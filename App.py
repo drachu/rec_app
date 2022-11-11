@@ -8,6 +8,7 @@ from kivy.graphics.texture import Texture
 from kivy.clock import Clock, mainthread
 import threading
 import cv2
+import platform
 
 import AppDesign
 from CamThreading import StereoCamera
@@ -178,4 +179,11 @@ class MainApp(MDApp):
 
 
 if __name__ == '__main__':
-    MainApp().run()
+    if platform.system() == "Windows":
+        MainApp().run()
+    else:
+        stereoCamera = StereoCamera()
+        while True:
+            frame = StereoCamera.synchronization_queue.get()
+            cv2.imshow('frame', frame)
+            cv2.waitKey(5)
