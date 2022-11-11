@@ -1,10 +1,17 @@
+import platform
 import cv2
 import numpy as np
-import tflite_runtime.interpreter as tflite
+from tensorflow import lite
+
+EDGETPU_SHARED_LIB = {
+  'Linux': 'libedgetpu.so.1',
+  'Darwin': 'libedgetpu.1.dylib',
+  'Windows': 'edgetpu.dll'
+}[platform.system()]
 
 class DetectionModel():
 
-    def __init__(self, model_dir_path="appResources/models/yolov7_model.tflite", class_names=['pedestrian'],
+    def __init__(self, model_dir_path="appResources/models/kaist_camel_own_v5-int8-v2_edgetpu.tflite", class_names=['pedestrian'],
                  interpreter=None, input_details=None, output_details=None):
         self.model_dir_path = model_dir_path
         self.class_names = class_names
@@ -16,7 +23,7 @@ class DetectionModel():
 
 
 def initialize_interpreter(path):
-    _interp = tflite.make_interpreter(path)
+    _interp = lite.Interpreter(path, experimental_delegates=[lite.experimental.load_delegate('libedgetpu.so.1')])
     _interp.allocate_tensors()
     _input_det = _interp.get_input_details()
     _output_det = _interp.get_output_details()
@@ -63,3 +70,6 @@ def draw_boxes_and_labels(output, image_orig):
         cv2.rectangle(image_orig, _box[0], _box[1], color, 2)
         cv2.putText(image_orig, _name, _box[0], cv2.FONT_HERSHEY_SIMPLEX, 0.75, [225, 255, 255], thickness=2)
     return _image_orig
+
+if __name__ == '__main__':
+    detection_model = DetectionModel()
