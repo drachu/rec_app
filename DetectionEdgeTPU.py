@@ -1,15 +1,12 @@
 import platform
 import cv2
 import numpy as np
-from tensorflow import lite
-
 EDGETPU_SHARED_LIB = {
   'Linux': 'libedgetpu.so.1',
   'Windows': 'edgetpu.dll'
 }
 
-class DetectionModel():
-
+class DetectionModelEdgeTPU():
     def __init__(self, model_dir_path="appResources/models/kaist_camel_own_v5-int8-v2_edgetpu.tflite", class_names=['pedestrian'],
                  interpreter=None, input_details=None, output_details=None):
         self.model_dir_path = model_dir_path
@@ -22,6 +19,7 @@ class DetectionModel():
 
 
 def initialize_interpreter(path):
+    from tensorflow import lite
     _interp = lite.Interpreter(path, experimental_delegates=[lite.experimental.load_delegate(EDGETPU_SHARED_LIB[platform.system()])])
     _interp.allocate_tensors()
     _input_det = _interp.get_input_details()
@@ -40,7 +38,7 @@ def preprocess_image(image):
     return _det_image, _image_orig
 
 
-def detection(det_image, interpreter_det, input_details_det, output_details_det):
+def detect(det_image, interpreter_det, input_details_det, output_details_det):
     interpreter_det.set_tensor(input_details_det[0]['index'], det_image)
     interpreter_det.invoke()
     _output_d = interpreter_det.get_tensor(output_details_det[0]['index'])
@@ -71,4 +69,12 @@ def draw_boxes_and_labels(output, image_orig):
     return _image_orig
 
 if __name__ == '__main__':
-    detection_model = DetectionModel()
+    detection_model = DetectionModelEdgeTPU()
+    test_image = cv2.imread("appResources/images/test_image.jpg")
+    image_det, image_orig = preprocess_image(test_image)
+    output_data = detect(image_det, detection_model.interpreter,
+                         detection_model.input_details,
+                         detection_model.output_details)
+    image_orig = draw_boxes_and_labels(output_data, image_orig)
+    test_image = cv2.resize(image_orig, (640, 488), interpolation=cv2.INTER_LANCZOS4)
+    cv2.imshow('test_image', test_image)

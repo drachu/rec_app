@@ -94,7 +94,7 @@ def generate_memory_info_card(self):
     self.memory_info_card.add_widget(self.memory_info_layout)
     return self.memory_info_card
 
-
+@mainthread
 def log_camera_event(self, event_text):
     self.log_list.add_widget(OneLineIconListItem(
         IconLeftWidget(icon='camera', icon_size=dp(20)),
@@ -159,6 +159,9 @@ def generate_detection_mode(self):
 
 def create_error_dialog(self, camera_errors, app_errors):
     self.error_dialog = None
+    errors = []
+    errors.extend(camera_errors)
+    errors.extend(app_errors)
     if "Connection with camera has been closed!" in camera_errors:
         self.error_dialog = MDDialog(buttons=[MDFlatButton(text="Try restart", on_press=self.try_restart_camera),
                                               MDRaisedButton(text="Exit", on_press=self.close_application)])
@@ -167,8 +170,7 @@ def create_error_dialog(self, camera_errors, app_errors):
                                               MDRaisedButton(text="Exit", on_press=self.close_application)])
 
     self.error_dialog.title = "Errors found!"
-    self.error_dialog.text = "\n".join(camera_errors)
-    self.error_dialog.text = "\n".join(app_errors)
+    self.error_dialog.text = "\n".join(errors)
     self.error_dialog.auto_dismiss = False
     return self.error_dialog
 

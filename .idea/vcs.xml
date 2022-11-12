@@ -2,6 +2,25 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/pycoral" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/pycoral- git" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/pycoral- git/libcoral" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/pycoral- git/libcoral/libedgetpu" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/pycoral- git/libcoral/test_data" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/pycoral- git/libedgetpu" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/pycoral- git/test_data" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/pycoral-git" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/pycoral-git/libcoral" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/pycoral-git/libcoral/libedgetpu" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/pycoral-git/libcoral/test_data" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/pycoral-git/libedgetpu" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/pycoral-git/test_data" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/pycoral/libcoral" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/pycoral/libcoral/libedgetpu" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/pycoral/libcoral/test_data" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/pycoral/libedgetpu" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/pycoral/test_data" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/yolov5" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/yolov7" vcs="Git" />
   </component>
 </project>

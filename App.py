@@ -1,7 +1,9 @@
 import io
+import multiprocessing
 from datetime import datetime
 from zipfile import ZipFile
 
+import torch
 from kivymd.app import MDApp
 from kivymd.theming import ThemeManager
 from kivy.graphics.texture import Texture
@@ -33,6 +35,7 @@ class MainApp(MDApp):
     def load_video(self):
         while True:
             # try:
+                self.update_camera_log()
                 if not MainApp.camera_started:
                     stereoCamera = StereoCamera()
                     MainApp.camera_started = True
@@ -69,7 +72,6 @@ class MainApp(MDApp):
         #MainApp.app_errors.append("Connection with camera has been closed!")
         if MainApp.app_errors:
             self.show_error_dialog()
-        self.update_camera_log()
 
     @mainthread
     def check_camera_errors(self):
@@ -128,6 +130,7 @@ class MainApp(MDApp):
         with open('records/recordedIR/IR_' + record_time + '.zip', 'wb') as f:
             f.write(zip_file_bytes_IR.getvalue())
         StereoCamera.recorded_frames_IR = []
+        AppDesign.log_app_event("Record saved")
 
     def update_record(self, instance):
         if MainApp.record_time < 15:
