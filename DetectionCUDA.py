@@ -20,7 +20,7 @@ def draw_detections(results, image):
 
 if __name__ == '__main__':
     detection_model = DetectionModelCUDA()
-    test_image = cv2.imread("appResources/images/test_image.jpg")
+    test_image = cv2.imread("appResources/images/test_image_00.jpg")
     results = detection_model.model(test_image)
     test_image = draw_detections(results, test_image)
     cv2.imshow('test_image', test_image)

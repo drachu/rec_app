@@ -1,80 +1,121 @@
-import platform
+import tflite_runtime.interpreter as tflite
+import torch
 import cv2
 import numpy as np
-EDGETPU_SHARED_LIB = {
-  'Linux': 'libedgetpu.so.1',
-  'Windows': 'edgetpu.dll'
-}
+import torchvision
 
-class DetectionModelEdgeTPU():
-    def __init__(self, model_dir_path="appResources/models/kaist_camel_own_v5-int8-v2_edgetpu.tflite", class_names=['pedestrian'],
-                 interpreter=None, input_details=None, output_details=None):
-        self.model_dir_path = model_dir_path
-        self.class_names = class_names
-        self.interpreter = interpreter
-        self.input_details = input_details,
-        self.output_details = output_details
-        if self.interpreter is None:
-            self.interpreter, self.input_details, self.output_details = initialize_interpreter(self.model_dir_path)
+class DetectionModelEdgeTPU:
+    def __init__(self, model_dir_path="appResources/models/kaist_camel_own_v5-384-512-int8.tflite"):
+        self.device = torch.device('cpu')
+        self.initliazlie_interpreter(model_dir_path)
 
+    def initliazlie_interpreter(self, path):
+        self.interpreter = tflite.Interpreter(path)
+        self.interpreter.allocate_tensors()
+        self.input_details = self.interpreter.get_input_details()
+        self.output_details = self.interpreter.get_output_details()
+        self.input_scale, self.input_zero_point = self.input_details[0]['quantization']
+        self.output_scale, self.output_zero_point = self.output_details[0]['quantization']
 
-def initialize_interpreter(path):
-    from tensorflow import lite
-    _interp = lite.Interpreter(path, experimental_delegates=[lite.experimental.load_delegate(EDGETPU_SHARED_LIB[platform.system()])])
-    _interp.allocate_tensors()
-    _input_det = _interp.get_input_details()
-    _output_det = _interp.get_output_details()
-    return _interp, _input_det, _output_det
+    def preprocess_image_for_yolo(self, image, new_shape=(384, 512), border_color=(114, 114, 114)):
+        shape = image.shape[:2]
+        r = min(new_shape[0] / shape[0], new_shape[1] / shape[1])
+        ratio = r, r
+        new_unpad = int(round(shape[1] * r)), int(round(shape[0] * r))
+        dw, dh = new_shape[1] - new_unpad[0], new_shape[0] - new_unpad[1] # wh padding
+        dw /= 2  # divide padding into 2 sides
+        dh /= 2
+        detImage = cv2.resize(image, new_unpad, interpolation=cv2.INTER_LINEAR)
+        top, bottom = int(round(dh - 0.1)), int(round(dh + 0.1))
+        left, right = int(round(dw - 0.1)), int(round(dw + 0.1))
+        detImage = cv2.copyMakeBorder(detImage, top, bottom, left, right, cv2.BORDER_CONSTANT, value=border_color)  # add border
+        return detImage, ratio, (dw, dh)
 
+    def preproces_image_for_detect(self, image):
+        _orig_image = cv2.resize(image, (512, 384), interpolation=cv2.INTER_LINEAR)
+        det_image = _orig_image.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
+        det_image = np.ascontiguousarray(det_image)  # contiguous
+        det_image = torch.from_numpy(det_image).to(self.device)
+        det_image = det_image.float()
+        det_image /= 255
+        det_image = det_image[None]
+        return det_image, _orig_image
 
-def preprocess_image(image):
-    _image = cv2.resize(image, (640, 480), interpolation=cv2.INTER_LANCZOS4)
-    _image_orig = _image
-    _det_image = _image.transpose((2, 0, 1))
-    _det_image = np.expand_dims(_det_image, 0)
-    _det_image = np.ascontiguousarray(_det_image)
-    _det_image = _det_image.astype(np.float32)
-    _det_image /= 255
-    return _det_image, _image_orig
+    def detection(self, detImage):
+        b, ch, h, w = detImage.shape
+        detImage = detImage.permute(0, 2, 3, 1)
+        detImage = detImage.cpu().numpy()
+        detImage = (detImage / self.input_scale + self.input_zero_point).astype(np.uint8)
+        self.interpreter.set_tensor(self.input_details[0]['index'], detImage)
+        self.interpreter.invoke()
+        y = []
+        for output in self.output_details:
+            x = self.interpreter.get_tensor(output['index'])
+            x = (x.astype(np.float32) - self.output_zero_point) * self.output_scale
+            y.append(x)
+        y[0][..., :4] *= [w, h, w, h]
+        return torch.from_numpy(y[0]).to(self.device)
 
+    def nms(self, prediction, conf_thres=0.25, iou_thres=0.45, max_det=300, nm=0):
+        bs = prediction.shape[0]  # batch size
+        nc = prediction.shape[2] - nm - 5  # number of classes
+        xc = prediction[..., 4] > conf_thres  # candidates
 
-def detect(det_image, interpreter_det, input_details_det, output_details_det):
-    interpreter_det.set_tensor(input_details_det[0]['index'], det_image)
-    interpreter_det.invoke()
-    _output_d = interpreter_det.get_tensor(output_details_det[0]['index'])
-    return _output_d
+        max_wh = 7680  # (pixels) maximum box width and height
+        max_nms = 30000  # maximum number of boxes into torchvision.ops.nms()
+        time_limit = 0.5 + 0.05 * bs  # seconds to quit after
+        redundant = True  # require redundant detections
+        merge = False  # use merge-NMS
+        mi = 5 + nc  # mask start index
 
+        output = [torch.zeros((0, 6 + nm), device=prediction.device)] * bs
 
-def draw_boxes(output, image_orig):
-    _image_orig = image_orig
-    for i, (batch_id, x0, y0, x1, y1, cls_id, score) in enumerate(output):
-        _score = round(float(score), 3)
-        _box = [(round(x0), round(y0)), (round(x1), round(y1))]
-        _name = 'pedestrian'
-        _color = (219, 3, 252)
-        _name += ' ' + str(_score)
-        cv2.rectangle(_image_orig, _box[0], _box[1], _color, 2)
-    return _image_orig
+        for xi, x in enumerate(prediction):
+            x = x[xc[xi]]  # confidence
+            x[:, 5:] *= x[:, 4:5]  # conf = obj_conf * cls_conf
+            box = self.xywh2xyxy(x[:, :4])  # center_x, center_y, width, height) to (x1, y1, x2, y2)
+            mask = x[:, mi:]  # zero columns if no masks
+            conf, j = x[:, 5:mi].max(1, keepdim=True)
+            x = torch.cat((box, conf, j.float(), mask), 1)[conf.view(-1) > conf_thres]
+            n = x.shape[0]
+            if not n:  # no boxes
+                continue
+            elif n > max_nms:  # excess boxes
+                x = x[x[:, 4].argsort(descending=True)[:max_nms]]  # sort by confidence
+            else:
+                x = x[x[:, 4].argsort(descending=True)]  # sort by confidence
+            c = x[:, 5:6] * max_wh  # classes
+            boxes, scores = x[:, :4] + c, x[:, 4]  # boxes (offset by class), scores
+            i = torchvision.ops.nms(boxes, scores, iou_thres)
+            output[xi] = x[i]
+        return output[0].numpy()
 
-def draw_boxes_and_labels(output, image_orig):
-    _image_orig = image_orig
-    for i, (batch_id, x0, y0, x1, y1, cls_id, score) in enumerate(output):
-        _score = round(float(score), 3)
-        _box = [(round(x0), round(y0)), (round(x1), round(y1))]
-        _name = 'pedestrian'
-        color = (219, 3, 252)
-        _name += ' ' + str(_score)
-        cv2.rectangle(image_orig, _box[0], _box[1], color, 2)
-        cv2.putText(image_orig, _name, _box[0], cv2.FONT_HERSHEY_SIMPLEX, 0.75, [225, 255, 255], thickness=2)
-    return _image_orig
+    def xywh2xyxy(self, x):
+        # Convert nx4 boxes from [x, y, w, h] to [x1, y1, x2, y2] where xy1=top-left, xy2=bottom-right
+        y = x.clone()
+        y[:, 0] = x[:, 0] - x[:, 2] / 2  # top left x
+        y[:, 1] = x[:, 1] - x[:, 3] / 2  # top left y
+        y[:, 2] = x[:, 0] + x[:, 2] / 2  # bottom right x
+        y[:, 3] = x[:, 1] + x[:, 3] / 2  # bottom right y
+        return y
+
+    def draw_boxes_and_labels(self, output_data, image):
+        _image = image
+        for i, det in enumerate(output_data):
+            _xy_min = (round(det[0]), round(det[1]))
+            _xy_max = (round(det[2]), round(det[3]))
+            _score = (round(det[4], 2))
+            _image = cv2.rectangle(_image, _xy_min, _xy_max, (140, 8, 189), 2)
+        return _image
+
 
 if __name__ == '__main__':
-    detection_model = DetectionModelEdgeTPU()
-    test_image = cv2.imread("appResources/images/test_image.jpg")
-    image_det, image_orig = preprocess_image(test_image)
-    output_data = detect(image_det, detection_model.interpreter,
-                         detection_model.input_details,
-                         detection_model.output_details)
-    image_orig = draw_boxes_and_labels(output_data, image_orig)
-    test_image = cv2.resize(image_orig, (640, 488), interpolation=cv2.INTER_LANCZOS4)
-    cv2.imshow('test_image', test_image)
+    detection_model = DetectionModelEdgeTPU(model_dir_path="appResources/models/kaist_camel_own_v5-384-512-int8.tflite")
+    img = cv2.imread("appResources/images/test_image_00.jpg")
+    img_yolo = detection_model.preprocess_image_for_yolo(img)[0]
+    img_det, orig_image = detection_model.preproces_image_for_detect(img)
+    output = detection_model.detection(img_det)
+    output_nms = detection_model.nms(output)
+    image = detection_model.draw_boxes_and_labels(output_nms, orig_image)
+    cv2.imshow('test_image', image)
+    cv2.waitKey(0)
