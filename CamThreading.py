@@ -49,7 +49,10 @@ class StereoCamera():
         StereoCamera.stereo_map_RGB_y = cv_file.getNode('stereoMapRGB_y').mat()
         StereoCamera.stereo_map_IR_x = cv_file.getNode('stereoMapThermal_x').mat()
         StereoCamera.stereo_map_IR_y = cv_file.getNode('stereoMapThermal_y').mat()
-
+        if (platform.system() == "Linux"):
+            StereoCamera.detection = True
+            StereoCamera.detection_labels = True
+            StereoCamera.detection_boxes = True
         thread_synchronization = SynchronizationThread()
         thread_synchronization.daemon = True
         thread_synchronization.start()
