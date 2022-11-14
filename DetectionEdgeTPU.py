@@ -10,7 +10,7 @@ class DetectionModelEdgeTPU:
         self.initliazlie_interpreter(model_dir_path)
 
     def initliazlie_interpreter(self, path):
-        self.interpreter = tflite.Interpreter(path)
+        self.interpreter = tflite.Interpreter(path, experimental_delegates=[tflite.load_delegate('libedgetpu.so.1')])
         self.interpreter.allocate_tensors()
         self.input_details = self.interpreter.get_input_details()
         self.output_details = self.interpreter.get_output_details()
