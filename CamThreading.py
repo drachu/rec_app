@@ -103,6 +103,7 @@ def synchronization(camera_RGB, camera_IR, receive_RGB, receive_IR, recording, d
     except:
         try:
             detection_model = DetectionModelCUDA()
+            print("CUDA/CPU model loaded")
             camera_log.append("CUDA/CPU model loaded")
         except:
             camera_log.append("Could not load model")
