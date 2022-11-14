@@ -7,7 +7,7 @@ from ctypes import c_bool, c_char_p
 import time
 import platform
 
-from DetectionEdgeTPU import DetectionModelEdgeTPU, preprocess_image, detect, draw_boxes, draw_boxes_and_labels
+from DetectionEdgeTPU import DetectionModelEdgeTPU
 from DetectionCUDA import DetectionModelCUDA, draw_detections
 
 class StereoCamera():
@@ -128,14 +128,13 @@ def synchronization(camera_RGB, camera_IR, receive_RGB, receive_IR, recording, d
 
                 if detection.value:
                         if detection_model is DetectionModelEdgeTPU:
-                            image_det, image_orig = preprocess_image(combined_frame)
-                            output_data = detect(image_det, detection_model.interpreter,
-                                                    detection_model.input_details,
-                                                    detection_model.output_details)
+                            image_det, image_orig = detection_model.preproces_image_for_detect(combined_frame)
+                            output_data = detection_model.detection(image_det)
+                            output_nms = detection_model.nms(output_data)
                             if StereoCamera.detection_labels:
-                                image_orig = draw_boxes_and_labels(output_data, image_orig)
+                                image_orig = detection_model.draw_boxes_and_labels(output_nms, image_orig)
                             elif StereoCamera.detection_boxes:
-                                image_orig = draw_boxes(output_data, image_orig)
+                                image_orig = detection_model.draw_boxes_and_labels(output_nms, image_orig)
                             combined_frame = cv2.resize(image_orig, (640, 488), interpolation=cv2.INTER_LANCZOS4)
                         else:
                             results = detection_model.model(combined_frame)

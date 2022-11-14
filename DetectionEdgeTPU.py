@@ -17,20 +17,6 @@ class DetectionModelEdgeTPU:
         self.input_scale, self.input_zero_point = self.input_details[0]['quantization']
         self.output_scale, self.output_zero_point = self.output_details[0]['quantization']
 
-    def preprocess_image_for_yolo(self, image, new_shape=(384, 512), border_color=(114, 114, 114)):
-        shape = image.shape[:2]
-        r = min(new_shape[0] / shape[0], new_shape[1] / shape[1])
-        ratio = r, r
-        new_unpad = int(round(shape[1] * r)), int(round(shape[0] * r))
-        dw, dh = new_shape[1] - new_unpad[0], new_shape[0] - new_unpad[1] # wh padding
-        dw /= 2  # divide padding into 2 sides
-        dh /= 2
-        detImage = cv2.resize(image, new_unpad, interpolation=cv2.INTER_LINEAR)
-        top, bottom = int(round(dh - 0.1)), int(round(dh + 0.1))
-        left, right = int(round(dw - 0.1)), int(round(dw + 0.1))
-        detImage = cv2.copyMakeBorder(detImage, top, bottom, left, right, cv2.BORDER_CONSTANT, value=border_color)  # add border
-        return detImage, ratio, (dw, dh)
-
     def preproces_image_for_detect(self, image):
         _orig_image = cv2.resize(image, (512, 384), interpolation=cv2.INTER_LINEAR)
         det_image = _orig_image.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
@@ -112,7 +98,6 @@ class DetectionModelEdgeTPU:
 if __name__ == '__main__':
     detection_model = DetectionModelEdgeTPU(model_dir_path="appResources/models/kaist_camel_own_v5-384-512-int8.tflite")
     img = cv2.imread("appResources/images/test_image_00.jpg")
-    img_yolo = detection_model.preprocess_image_for_yolo(img)[0]
     img_det, orig_image = detection_model.preproces_image_for_detect(img)
     output = detection_model.detection(img_det)
     output_nms = detection_model.nms(output)
