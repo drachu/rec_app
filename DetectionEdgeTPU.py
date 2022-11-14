@@ -5,7 +5,7 @@ import numpy as np
 import torchvision
 
 class DetectionModelEdgeTPU:
-    def __init__(self, model_dir_path="appResources/models/kaist_camel_own_v5-384-512-int8.tflite"):
+    def __init__(self, model_dir_path="appResources/models/kaist_camel_own_v5-int8-384-512_edgetpu.tflite"):
         self.device = torch.device('cpu')
         self.initliazlie_interpreter(model_dir_path)
 
@@ -96,7 +96,7 @@ class DetectionModelEdgeTPU:
 
 
 if __name__ == '__main__':
-    detection_model = DetectionModelEdgeTPU(model_dir_path="appResources/models/kaist_camel_own_v5-384-512-int8.tflite")
+    detection_model = DetectionModelEdgeTPU(model_dir_path="appResources/models/kaist_camel_own_v5-int8-384-512_edgetpu.tflite")
     img = cv2.imread("appResources/images/test_image_00.jpg")
     img_det, orig_image = detection_model.preproces_image_for_detect(img)
     output = detection_model.detection(img_det)
