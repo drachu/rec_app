@@ -131,7 +131,7 @@ def synchronization(camera_RGB, camera_IR, receive_RGB, receive_IR, recording, d
                 #StereoCamera.camera_errors.append("Image preprocess error!")
 
                 if detection.value:
-                        if detection_model is DetectionModelEdgeTPU:
+                        if platform.system() == "Linux":
                             image_det, image_orig = detection_model.preproces_image_for_detect(combined_frame)
                             output_data = detection_model.detection(image_det)
                             output_nms = detection_model.nms(output_data)
