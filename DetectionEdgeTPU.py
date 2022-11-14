@@ -92,7 +92,7 @@ class DetectionModelEdgeTPU:
             _xy_max = (round(det[2]), round(det[3]))
             _score = (round(det[4], 2))
             _image = cv2.rectangle(_image, _xy_min, _xy_max, (140, 8, 189), 2)
-            image = cv2.putText(image, 'OpenCV', _xy_min, cv2.FONT_HERSHEY_SIMPLEX, 0.4, (140, 8, 189), 1, cv2.LINE_AA)
+            image = cv2.putText(image, str(_score), (_xy_min[0], _xy_min[1]-10), cv2.FONT_HERSHEY_SIMPLEX, 1, (140, 8, 189), 1, cv2.LINE_AA)
         return _image
 
 
