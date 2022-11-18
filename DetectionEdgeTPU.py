@@ -45,13 +45,9 @@ class DetectionModelEdgeTPU:
         _det_image = (_det_image / self.input_scale + self.input_zero_point).astype(np.uint8)
         self.interpreter.set_tensor(self.input_details[0]['index'], _det_image)
         self.interpreter.invoke()
-        y = []
-        for output_detail in self.output_details:
-            x = self.interpreter.get_tensor(output_detail['index'])
-            x = (x.astype(np.float32) - self.output_zero_point) * self.output_scale
-            y.append(x)
-        y[0][..., :4] *= [_width, _height, _width, _height]
-        return torch.from_numpy(y[0]).to(self.device)
+        result = ((self.interpreter.get_tensor(self.output_details[0]['index'])).astype(np.float32) - self.output_zero_point) * self.output_scale
+        result[..., :4] *= [_width, _height, _width, _height]
+        return torch.from_numpy(result).to(self.device)
 
     def nms(self, predictions, conf_thres=0.25, iou_thres=0.45, max_det=300, nm=0):
         batch_size = predictions.shape[0]  # batch size
