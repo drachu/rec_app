@@ -71,19 +71,11 @@ class StereoCamera:
 
 
 def resize_and_map(name, frame_to_calibrate, stereo_map_x, stereo_map_y):
-    if name == "RGB":
-        timer_start = datetime.now()
     resize = cv2.resize(frame_to_calibrate, (640, 488), interpolation=cv2.INTER_LANCZOS4)
     frame_mapped = cv2.remap(resize, stereo_map_x, stereo_map_y, cv2.INTER_LANCZOS4, cv2.BORDER_CONSTANT, 0)
     if name == "RGB":
-        translate_x, translate_y = -45, -40
-        rows, cols = 488, 640
-        M = np.float32([[1, 0, translate_x], [0, 1, translate_y]])
-        frame_mapped = cv2.warpAffine(frame_mapped, M, (cols, rows))
-        frame_mapped = frame_mapped[0:488 - 70, 0:640 - 80]
+        frame_mapped = cv2.warpAffine(frame_mapped, np.float32([[1, 0, -45], [0, 1, -40]]), (640, 488))[0:488 - 70, 0:640 - 80]
         frame_mapped = cv2.resize(frame_mapped, (640, 488), interpolation=cv2.INTER_AREA)
-        timer_end = datetime.now()
-        print("Mapping time: " + str((timer_end - timer_start).microseconds / 1000) + " ms")
     return frame_mapped
 
 
@@ -122,9 +114,10 @@ def synchronization(camera_RGB, camera_IR, receive_RGB, receive_IR, recording, d
                 #StereoCamera.camera_errors.append("Could not get IR or RGB frame for synchronization!")
 
             #try:
+
                 frame_IR = cv2.cvtColor(frame_IR, cv2.COLOR_BGR2GRAY)
-                if platform.system() == "Windows":
-                    frame_IR = cv2.bilateralFilter(frame_IR, 30, 15, 15)
+                # if platform.system() == "Windows":
+                #     frame_IR = cv2.bilateralFilter(frame_IR, 30, 15, 15)
                 frame_IR = cv2.bitwise_not(frame_IR)
                 frame_RGB = cv2.cvtColor(frame_RGB, cv2.COLOR_BGR2GRAY)
                 combined_frame = cv2.addWeighted(frame_RGB, 0.3, frame_IR, 0.7, 0.0)
