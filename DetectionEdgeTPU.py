@@ -49,39 +49,35 @@ class DetectionModelEdgeTPU:
         result[..., :4] *= [_width, _height, _width, _height]
         return torch.from_numpy(result).to(self.device)
 
-    def nms(self, predictions, conf_thres=0.25, iou_thres=0.45, max_det=300, nm=0):
+    def nms(self, predictions, conf_thres=0.45, iou_thres=0.30, max_det=300, nm=0):
         batch_size = predictions.shape[0]  # batch size
         class_count = predictions.shape[2] - nm - 5  # number of classes
         prediction_candidates = predictions[..., 4] > conf_thres  # candidates
 
         max_wh = 7680  # (pixels) maximum box width and height
         max_nms = 30000  # maximum number of boxes into torchvision.ops.nms()
-        time_limit = 0.5 + 0.05 * batch_size  # seconds to quit after
-        redundant = True  # require redundant detections
-        merge = False  # use merge-NMS
         mi = 5 + class_count  # mask start index
 
         output = [torch.zeros((0, 6 + nm), device=predictions.device)] * batch_size
 
-        for xi, _prediction in enumerate(predictions):
-            _prediction = _prediction[prediction_candidates[xi]]  # confidence
-            _prediction[:, 5:] *= _prediction[:, 4:5]  # confidence = obj_confidence * cls_confidence
-            box = self.xywh2xyxy(_prediction[:, :4])  # center_x, center_y, width, height) to (x1, y1, x2, y2)
-            mask = _prediction[:, mi:]  # zero columns if no masks
-            conf, j = _prediction[:, 5:mi].max(1, keepdim=True)
-            _prediction = torch.cat((box, conf, j.float(), mask), 1)[conf.view(-1) > conf_thres]
-            n = _prediction.shape[0]
-            if not n:  # no boxes
-                continue
-            elif n > max_nms:  # excess boxes
-                _prediction = _prediction[_prediction[:, 4].argsort(descending=True)[:max_nms]]  # sort by confidence
-            else:
-                _prediction = _prediction[_prediction[:, 4].argsort(descending=True)]  # sort by confidence
-            c = _prediction[:, 5:6] * max_wh  # classes
-            boxes, scores = _prediction[:, :4] + c, _prediction[:, 4]  # boxes (offset by class), scores
-            i = torchvision.ops.nms(boxes, scores, iou_thres)
-            output[xi] = _prediction[i]
-        return output[0].numpy()
+        _prediction = predictions[0][prediction_candidates[0]]  # confidence
+        _prediction[:, 5:] *= _prediction[:, 4:5]  # confidence = obj_confidence * cls_confidence
+        box = self.xywh2xyxy(_prediction[:, :4])  # center_x, center_y, width, height) to (x1, y1, x2, y2)
+        mask = _prediction[:, mi:]  # zero columns if no masks
+        conf, j = _prediction[:, 5:mi].max(1, keepdim=True)
+        _prediction = torch.cat((box, conf, j.float(), mask), 1)[conf.view(-1) > conf_thres]
+        n = _prediction.shape[0]
+        if not n:  # no boxes
+            return []
+        elif n > max_nms:  # excess boxes
+            _prediction = _prediction[_prediction[:, 4].argsort(descending=True)[:max_nms]]  # sort by confidence
+        else:
+            _prediction = _prediction[_prediction[:, 4].argsort(descending=True)]  # sort by confidence
+        c = _prediction[:, 5:6] * max_wh  # classes
+        boxes, scores = _prediction[:, :4] + c, _prediction[:, 4]  # boxes (offset by class), scores
+        i = torchvision.ops.nms(boxes, scores, iou_thres)
+        _output = _prediction[i]
+        return _output.numpy()
 
     def xywh2xyxy(self, x):
         _box = x.clone()
