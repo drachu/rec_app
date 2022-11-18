@@ -4,11 +4,12 @@ import torch
 import cv2
 import numpy as np
 import torchvision
+import datetime
 
 class DetectionModelEdgeTPU:
     TEST_TFLite = False
 
-    def __init__(self, model_dir_path="appResources/models/yv5_kco__int8_384_512_edgetpu.tflite"):
+    def __init__(self, model_dir_path="appResources/models/yv5/yv5s_kco_uint8_384_512_edgetpu.tflite"):
         self.device = torch.device('cpu')
         self.initliazlie_interpreter(model_dir_path)
 
@@ -18,7 +19,7 @@ class DetectionModelEdgeTPU:
             'Darwin': 'libedgetpu.1.dylib',
             'Windows': 'edgetpu.dll'}[platform.system()]
         if DetectionModelEdgeTPU.TEST_TFLite:
-            self.interpreter = tflite.Interpreter("appResources/models/yv5_kco_int8_384_512.tflite")
+            self.interpreter = tflite.Interpreter("appResources/models/yv5/yv5s_kco_uint8_384_512.tflite")
         else:
             self.interpreter = tflite.Interpreter(path, experimental_delegates=[tflite.load_delegate(self.delegate)])
         self.interpreter.allocate_tensors()
@@ -109,7 +110,10 @@ if __name__ == '__main__':
     detection_model = DetectionModelEdgeTPU(model_dir_path="appResources/models/kaist_camel_own_v5-int8-384-512_edgetpu.tflite")
     img = cv2.imread("appResources/images/test_image_00.jpg")
     img_det, orig_image = detection_model.preproces_image_for_detect(img)
+    timer_start = datetime.datetime.now()
     output = detection_model.detection(img_det)
+    timer_end = datetime.datetime.now()
+    print("Detection time: " + str((timer_end-timer_start).microseconds/1000) + " ms")
     output_nms = detection_model.nms(output)
     image = detection_model.draw_boxes_and_labels(output_nms, orig_image)
     cv2.imshow('test_image', image)
