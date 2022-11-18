@@ -25,7 +25,7 @@ if __name__ == '__main__':
 
     results = detection_model.model(test_image)
     test_image = draw_detections(results, test_image)
-    s
+    
     timer_end = datetime.datetime.now()
     print("Detection time: " + str((timer_end-timer_start).microseconds/1000) + " ms")
     cv2.imshow('test_image', test_image)
