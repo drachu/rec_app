@@ -50,15 +50,12 @@ class DetectionModelEdgeTPU:
         return torch.from_numpy(result).to(self.device)
 
     def nms(self, predictions, conf_thres=0.45, iou_thres=0.30, max_det=300, nm=0):
-        batch_size = predictions.shape[0]  # batch size
         class_count = predictions.shape[2] - nm - 5  # number of classes
         prediction_candidates = predictions[..., 4] > conf_thres  # candidates
 
         max_wh = 7680  # (pixels) maximum box width and height
         max_nms = 30000  # maximum number of boxes into torchvision.ops.nms()
         mi = 5 + class_count  # mask start index
-
-        output = [torch.zeros((0, 6 + nm), device=predictions.device)] * batch_size
 
         _prediction = predictions[0][prediction_candidates[0]]  # confidence
         _prediction[:, 5:] *= _prediction[:, 4:5]  # confidence = obj_confidence * cls_confidence
@@ -76,8 +73,7 @@ class DetectionModelEdgeTPU:
         c = _prediction[:, 5:6] * max_wh  # classes
         boxes, scores = _prediction[:, :4] + c, _prediction[:, 4]  # boxes (offset by class), scores
         i = torchvision.ops.nms(boxes, scores, iou_thres)
-        _output = _prediction[i]
-        return _output.numpy()
+        return _prediction[i].numpy()
 
     def xywh2xyxy(self, x):
         _box = x.clone()
@@ -101,11 +97,11 @@ class DetectionModelEdgeTPU:
 if __name__ == '__main__':
     detection_model = DetectionModelEdgeTPU(model_dir_path="appResources/models/yv5/yv5s_kco_uint8_384_512_edgetpu.tflite")
     img = cv2.imread("appResources/images/test_image_00.jpg")
-    timer_start = datetime.datetime.now()
 
     img_det, orig_image = detection_model.preproces_image_for_detect(img)
     output = detection_model.detection(img_det)
     output_nms = detection_model.nms(output)
+    timer_start = datetime.datetime.now()
     image = detection_model.draw_boxes_and_labels(output_nms, orig_image)
 
     timer_end = datetime.datetime.now()
