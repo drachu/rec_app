@@ -190,7 +190,7 @@ def cam_view(cam_id, name, stereo_map_x, stereo_map_y, camera_reading_RGB, camer
         if name == "RGB" and platform.system() == "Windows":
             time.sleep(1.0 / 8.7)
         elif name == "IR" and platform.system() == "Linux":
-            time.sleep(1.0/100.0)
+            time.sleep(1.0/200.0)
         frame = resize_and_map(name, frame, stereo_map_x, stereo_map_y)
         put_frame(name, frame, camera_reading_RGB, camera_reading_IR, camera_IR, camera_RGB, video_queue_IR, video_queue_RGB)
 
