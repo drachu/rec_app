@@ -42,7 +42,6 @@ class StereoCamera:
     def __init__(self):
         StereoCamera.manager = Manager()
         StereoCamera.camera_log = StereoCamera.manager.list()
-        print(len(StereoCamera.camera_log))
         StereoCamera.camera_errors = StereoCamera.manager.list()
         StereoCamera.recorded_frames_IR = StereoCamera.manager.list()
         StereoCamera.recorded_frames_RGB = StereoCamera.manager.list()
@@ -72,6 +71,8 @@ class StereoCamera:
 
 
 def resize_and_map(name, frame_to_calibrate, stereo_map_x, stereo_map_y):
+    if name == "RGB":
+        timer_start = datetime.now()
     resize = cv2.resize(frame_to_calibrate, (640, 488), interpolation=cv2.INTER_LANCZOS4)
     frame_mapped = cv2.remap(resize, stereo_map_x, stereo_map_y, cv2.INTER_LANCZOS4, cv2.BORDER_CONSTANT, 0)
     if name == "RGB":
@@ -81,6 +82,8 @@ def resize_and_map(name, frame_to_calibrate, stereo_map_x, stereo_map_y):
         frame_mapped = cv2.warpAffine(frame_mapped, M, (cols, rows))
         frame_mapped = frame_mapped[0:488 - 70, 0:640 - 80]
         frame_mapped = cv2.resize(frame_mapped, (640, 488), interpolation=cv2.INTER_AREA)
+        timer_end = datetime.now()
+        print("Mapping time: " + str((timer_end - timer_start).microseconds / 1000) + " ms")
     return frame_mapped
 
 
