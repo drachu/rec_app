@@ -107,7 +107,7 @@ class DetectionModelEdgeTPU:
 
 
 if __name__ == '__main__':
-    detection_model = DetectionModelEdgeTPU(model_dir_path="appResources/models/kaist_camel_own_v5-int8-384-512_edgetpu.tflite")
+    detection_model = DetectionModelEdgeTPU(model_dir_path="appResources/models/yv5/yv5s_kco_uint8_384_512_edgetpu.tflite")
     img = cv2.imread("appResources/images/test_image_00.jpg")
     img_det, orig_image = detection_model.preproces_image_for_detect(img)
     timer_start = datetime.datetime.now()
