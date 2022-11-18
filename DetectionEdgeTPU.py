@@ -109,12 +109,14 @@ class DetectionModelEdgeTPU:
 if __name__ == '__main__':
     detection_model = DetectionModelEdgeTPU(model_dir_path="appResources/models/yv5/yv5s_kco_uint8_384_512_edgetpu.tflite")
     img = cv2.imread("appResources/images/test_image_00.jpg")
-    img_det, orig_image = detection_model.preproces_image_for_detect(img)
     timer_start = datetime.datetime.now()
+
+    img_det, orig_image = detection_model.preproces_image_for_detect(img)
     output = detection_model.detection(img_det)
-    timer_end = datetime.datetime.now()
-    print("Detection time: " + str((timer_end-timer_start).microseconds/1000) + " ms")
     output_nms = detection_model.nms(output)
     image = detection_model.draw_boxes_and_labels(output_nms, orig_image)
+
+    timer_end = datetime.datetime.now()
+    print("Detection time: " + str((timer_end-timer_start).microseconds/1000) + " ms")
     cv2.imshow('test_image', image)
     cv2.waitKey(0)
