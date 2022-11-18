@@ -2,7 +2,7 @@ import cv2
 import torch
 import pandas
 class DetectionModelCUDA():
-    def __init__(self, model_dir_path='appResources/models/kaist_camel_own_v5.pt', class_names=['pedestrian']):
+    def __init__(self, model_dir_path='appResources/models/yv5.pt',class_names=['pedestrian']):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model_dir_path = model_dir_path
         self.class_names = class_names

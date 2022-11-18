@@ -1,6 +1,6 @@
 import cv2
 
-from CamThreading import StereoCamera
+from CamerasProcessing import StereoCamera
 
 if __name__ == '__main__':
     stereoCamera = StereoCamera()

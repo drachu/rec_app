@@ -2,20 +2,17 @@ import io
 import multiprocessing
 from datetime import datetime
 from zipfile import ZipFile
-
-import torch
 from kivymd.app import MDApp
 from kivymd.theming import ThemeManager
 from kivy.graphics.texture import Texture
 from kivy.clock import Clock, mainthread
 import threading
 import cv2
-import platform
-
 import AppDesign
-from CamThreading import StereoCamera
+from CamerasProcessing import StereoCamera
 from AppDesign import generate_app_design, create_error_dialog
 
+from kivy.config import Config
 
 class MainApp(MDApp):
     app_errors = []
@@ -35,11 +32,12 @@ class MainApp(MDApp):
     def load_video(self):
         while True:
             # try:
-                self.update_camera_log()
                 if not MainApp.camera_started:
                     stereoCamera = StereoCamera()
                     MainApp.camera_started = True
                     AppDesign.log_app_event(self, "Connection!")
+                    # self.update_camera_log()
+
                 if StereoCamera.cameras_reading and not StereoCamera.synchronization_queue.empty():
                     frame = StereoCamera.synchronization_queue.get()
                     self.update_image(frame)
@@ -49,6 +47,8 @@ class MainApp(MDApp):
                     self.check_camera_errors()
 
     def build(self):
+        self.title = "Detection App"
+        self.icon = 'appResources/images/app_logo.ico'
         self.screen = generate_app_design(self)
         videoThread = self.VideoThread(self)
         videoThread.daemon = True
@@ -57,6 +57,9 @@ class MainApp(MDApp):
 
     @mainthread
     def update_image(self, frame):
+        if self.spinner.active:
+            self.spinner.active = False
+            self.screen_manager.current = "Camera"
         frame = cv2.resize(frame,
                             (int((self.image.height * 64) / 48),
                             int(self.image.height)),
@@ -77,9 +80,9 @@ class MainApp(MDApp):
     def check_camera_errors(self):
         if StereoCamera.camera_errors:
             self.show_error_dialog()
-
+    @mainthread
     def update_camera_log(self):
-        if StereoCamera.camera_log:
+        if len(StereoCamera.camera_log) > 0:
             AppDesign.log_camera_event(self, StereoCamera.camera_log[0])
             StereoCamera.camera_log.pop(0)
 
@@ -106,31 +109,9 @@ class MainApp(MDApp):
                 self.record_time.text = "0:00"
                 self.recording_progress_bar.value = 0
                 MainApp.record_time = 0
-                self.save_recording()
-
-    def save_recording(self):
-        zip_file_bytes_RGB = io.BytesIO()
-        zip_file_bytes_IR = io.BytesIO()
-        record_time = datetime.utcnow().strftime('%Y-%m-%d_%H-%M-%S-%f')[:-3]
-        with ZipFile(zip_file_bytes_RGB, 'w') as zip_file:
-            for image, image_name in StereoCamera.recorded_frames_RGB:
-                is_success, buffer = cv2.imencode(".jpg", image)
-                io_buf = io.BytesIO(buffer)
-                zip_file.writestr(image_name + ".jpg", io_buf.getvalue())
-
-        with open('records/recordedRGB/RGB_' + record_time + '.zip', 'wb') as f:
-            f.write(zip_file_bytes_RGB.getvalue())
-        StereoCamera.recorded_frames_RGB = []
-
-        with ZipFile(zip_file_bytes_IR, 'w') as zip_file:
-            for image, image_name in StereoCamera.recorded_frames_IR:
-                is_success, buffer = cv2.imencode(".jpg", image)
-                io_buf = io.BytesIO(buffer)
-                zip_file.writestr(image_name + ".jpg", io_buf.getvalue())
-        with open('records/recordedIR/IR_' + record_time + '.zip', 'wb') as f:
-            f.write(zip_file_bytes_IR.getvalue())
-        StereoCamera.recorded_frames_IR = []
-        AppDesign.log_app_event("Record saved")
+                AppDesign.log_app_event(self, "Record saved")
+                save_process = threading.Thread(target=save_recording, daemon=True)
+                save_process.start()
 
     def update_record(self, instance):
         if MainApp.record_time < 15:
@@ -181,12 +162,30 @@ class MainApp(MDApp):
             self.show_error_dialog()
 
 
-if __name__ == '__main__':
-    if platform.system() == "Windows":
-        MainApp().run()
-    else:
-        stereoCamera = StereoCamera()
-        while True:
-            frame = StereoCamera.synchronization_queue.get()
-            cv2.imshow('frame', frame)
-            cv2.waitKey(5)
+def save_recording():
+    zip_file_bytes_RGB = io.BytesIO()
+    zip_file_bytes_IR = io.BytesIO()
+    record_time = datetime.utcnow().strftime('%Y-%m-%d_%H-%M-%S-%f')[:-3]
+    with ZipFile(zip_file_bytes_RGB, 'w') as zip_file:
+        for image, image_name in StereoCamera.recorded_frames_RGB:
+            is_success, buffer = cv2.imencode(".jpg", image)
+            io_buf = io.BytesIO(buffer)
+            zip_file.writestr(image_name + ".jpg", io_buf.getvalue())
+
+    with open('records/recordedRGB/RGB_' + record_time + '.zip', 'wb') as f:
+        f.write(zip_file_bytes_RGB.getvalue())
+    StereoCamera.recorded_frames_RGB[:] = []
+
+    with ZipFile(zip_file_bytes_IR, 'w') as zip_file:
+        for image, image_name in StereoCamera.recorded_frames_IR:
+            is_success, buffer = cv2.imencode(".jpg", image)
+            io_buf = io.BytesIO(buffer)
+            zip_file.writestr(image_name + ".jpg", io_buf.getvalue())
+    with open('records/recordedIR/IR_' + record_time + '.zip', 'wb') as f:
+        f.write(zip_file_bytes_IR.getvalue())
+    StereoCamera.recorded_frames_IR[:] = []
+
+def run_app():
+    Config.set('kivy', 'window_icon', 'appResources/images/app_logo.ico')
+    Config.write()
+    MainApp().run()

@@ -8,7 +8,7 @@ from kivymd.uix.card import MDCard
 from kivymd.uix.gridlayout import MDGridLayout
 from kivymd.uix.button import MDRaisedButton, MDFlatButton, MDFloatingActionButtonSpeedDial, MDIconButton
 from kivy.uix.image import Image
-from kivy.uix.screenmanager import Screen
+from kivy.uix.screenmanager import Screen, ScreenManager
 from kivymd.uix.list import MDList, OneLineIconListItem, IconLeftWidget
 from kivymd.uix.progressbar import MDProgressBar
 from kivymd.uix.scrollview import MDScrollView
@@ -80,6 +80,8 @@ def generate_record_card(self):
     return self.record_card
 
 
+
+
 def generate_memory_info_card(self):
     bytes_per_GB = 1024 * 1024 * 1024
     total, used, free = shutil.disk_usage("/")
@@ -101,7 +103,7 @@ def log_camera_event(self, event_text):
         text=event_text, font_style='Caption'))
 
 @mainthread
-def log_app_event(self, event_text):
+def log_app_event(self, event_text="Record saved"):
     self.log_list.add_widget(OneLineIconListItem(
         IconLeftWidget(icon='application-cog-outline', icon_size=dp(20)),
         text=event_text, font_style='Caption'))
@@ -111,6 +113,26 @@ class MyToggleButton(MDFlatButton, MDToggleButton):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.background_down = self.theme_cls.primary_color
+
+
+class CameraScreen(Screen):
+    def __init__(self, app_self):
+        Screen.__init__(self)
+        self.name = "Camera"
+        app_self.image = Image()
+        self.add_widget(app_self.image)
+
+
+class LoadingScreen(Screen):
+    def __init__(self, app_self):
+        Screen.__init__(self)
+        self.name = "Loading"
+        app_self.spinner = MDSpinner(
+            size_hint=(0.25, 0.25),
+            pos_hint={'center_x': .5, 'center_y': .5},
+            active=True)
+        self.add_widget(app_self.spinner)
+
 
 
 def generate_bottom_panel(self):
@@ -232,9 +254,13 @@ def generate_app_design(self):
     self.layout.add_widget(self.right_layout)
     self.screen.add_widget(self.layout)
 
-    self.image = Image()
     self.bottom_panel = generate_bottom_panel(self)
-    self.right_layout.add_widget(self.image)
+
+    self.screen_manager = ScreenManager()
+    self.screen_manager.add_widget(CameraScreen(self))
+    self.screen_manager.add_widget(LoadingScreen(self))
+    self.screen_manager.current = "Camera"
+    self.right_layout.add_widget(self.screen_manager)
     self.right_layout.add_widget(self.bottom_panel)
 
     return self.screen
