@@ -100,8 +100,9 @@ if __name__ == '__main__':
 
     img_det, orig_image = detection_model.preproces_image_for_detect(img)
     output = detection_model.detection(img_det)
-    output_nms = detection_model.nms(output)
     timer_start = datetime.datetime.now()
+    
+    output_nms = detection_model.nms(output)
     image = detection_model.draw_boxes_and_labels(output_nms, orig_image)
 
     timer_end = datetime.datetime.now()
