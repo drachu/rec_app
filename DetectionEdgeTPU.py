@@ -33,7 +33,7 @@ class DetectionModelEdgeTPU:
         _det_image = _det_image.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
         _det_image = np.ascontiguousarray(_det_image)  # contiguous
         _det_image = torch.from_numpy(_det_image).to(self.device)
-        _det_image = (_det_image.astype(float)/255)[None]
+        _det_image = (_det_image.float()/255)[None]
         return _det_image, frame
 
     def detection(self, frame):
@@ -88,14 +88,14 @@ class DetectionModelEdgeTPU:
             _xy_max = (round(det[2]), round(det[3]))
             _score = (round(det[4], 2))
             _image = cv2.rectangle(_image, _xy_min, _xy_max, (140, 8, 189), 2)
-            if labels:
-                _image = cv2.putText(_image, str(_score), (_xy_min[0], _xy_min[1]-10), cv2.FONT_HERSHEY_SIMPLEX, 1, (140, 8, 189), 1, cv2.LINE_AA)
+            _image = cv2.putText(_image, str(_score), (_xy_min[0], _xy_min[1]-10), cv2.FONT_HERSHEY_SIMPLEX, 1, (140, 8, 189), 1, cv2.LINE_AA)
         return _image
 
 
 if __name__ == '__main__':
     detection_model = DetectionModelEdgeTPU(model_dir_path="AppResources/models/yv5/yv5s_kco_uint8_384_512_edgetpu.tflite")
-    img = cv2.imread("AppResources/models/test_images/test_image_03.jpg")
+    img = cv2.imread("AppResources/models/test_images/test_image_00.jpg")
+    img = cv2.resize(img, (512, 384), interpolation=cv2.INTER_LINEAR)
 
     preprocess_timer_start = datetime.datetime.now()
     img_det, orig_image = detection_model.preproces_image_for_detect(img)
