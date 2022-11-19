@@ -24,7 +24,7 @@ from kivymd.uix.label import MDLabel, MDIcon
 def generate_left_card(self):
     _left_card = MDCard(elevation=3, radius=20, size_hint=(0.3, 1))
     self.left_layout = MDGridLayout(cols=1, spacing=20, padding=20)
-    self.university_logo = Image(source=r"appResources/images/pg_logo.png", size_hint=(1, 0.2))
+    self.university_logo = Image(source=r"AppResources/images/pg_logo.png", size_hint=(1, 0.2))
     self.button_exit = MDRoundFlatIconButton(icon="power",
                                              size_hint=(1, 0.1),
                                              text="Exit",
@@ -56,7 +56,7 @@ def generate_log_card(self):
 
 def generate_information_layout(self):
     self.information_layout = MDGridLayout(cols=2, size_hint=(1, 0.1))
-    self.about_instruction_image = Image(source=r"appResources/images/about.jpg")
+    self.about_instruction_image = Image(source=r"AppResources/images/about.jpg")
     self.information_button = MDIconButton(icon='information-outline', on_press=self.show_info_dialog)
     self.switch_theme = MDSwitch(active=True)
     self.switch_theme.bind(active=self.switch_theme_mode)
@@ -84,12 +84,11 @@ def generate_record_card(self):
 
 
 def generate_memory_info_card(self):
-    bytes_per_GB = 1024 * 1024 * 1024
     total, used, free = shutil.disk_usage("/")
     self.memory_info_card = MDCard(size_hint=(1, 0.2), elevation=3, padding=10, radius=20)
     self.memory_info_layout = MDGridLayout(cols=1, spacing=10)
     self.label_memory = MDLabel(text="Memory space", pos_hint={'y': .5})
-    self.label_memory_state = MDLabel(text=str(round(float(used) / bytes_per_GB, 1)) + "GB/" + str(round(float(total) / bytes_per_GB, 1)) + "GB")
+    self.label_memory_state = MDLabel()
     self.memory_space_bar = MDProgressBar(max=total, value=used, size_hint=(1, 0.1))
     self.memory_info_layout.add_widget(self.label_memory)
     self.memory_info_layout.add_widget(self.memory_space_bar)
@@ -192,11 +191,11 @@ def generate_bottom_panel(self):
 def generate_detection_mode(self):
     self.detection_mode = MDFloatingActionButtonSpeedDial(data={
         'No detection': ['square-off-outline', "on_press", lambda x:
-        self.switch_detection_mode(detection=False, detection_boxes=False, detection_labels=False)],
+        self.switch_detection_mode(detection=False, labels=False)],
         'Boxes only': ['vector-square', "on_press", lambda x:
-        self.switch_detection_mode(detection=True, detection_boxes=True, detection_labels=False)],
+        self.switch_detection_mode(detection=True, labels=False)],
         'Boxes&labels': ['label-multiple-outline', "on_press", lambda x:
-        self.switch_detection_mode(detection=True, detection_boxes=True, detection_labels=True)]},
+        self.switch_detection_mode(detection=True, labels=True)]},
         hint_animation=True,
         root_button_anim=True)
     return self.detection_mode
@@ -227,10 +226,10 @@ def create_information_dialog(self):
                                        content_cls=MDBoxLayout(
                                           MDLabel(text="This application was designed to support pedestrian detection as part of the engineering diploma project \"" \
                                                        "Pedestrian detection software using multimodal imaging and machine learning\". After starting the application, the loading animation should end with showing the image from the cameras."
-                                                       "Cameras must be connected, otherwise an error window will appear. If you wait for a long time for the cameras to turn on, restart the application by reconnecting the cameras before doing so."
+                                                       "Cameras must be connected, otherwise an error window will appear. If you wait for a long time for the cameras to turn on, restart the application by reconnecting the cameras before doing so. "
                                                        "Below are the menu instructions.",
                                                   size_hint = (1, 0.25)),
-                                          Image(source='appResources/images/about.jpg'),
+                                          Image(source='AppResources/images/about.jpg'),
                                                 orientation='vertical',
                                                 spacing=dp(12),
                                                 size_hint_y=None,

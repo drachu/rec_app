@@ -7,9 +7,9 @@ import torchvision
 import datetime
 
 class DetectionModelEdgeTPU:
-    TEST_TFLite = True
+    TEST_TFLite = False
 
-    def __init__(self, model_dir_path="appResources/models/yv5/yv5s_ko_uint8_384_512_edgetpu.tflite"):
+    def __init__(self, model_dir_path="AppResources/models/yv5/yv5s_ko_uint8_384_512_edgetpu.tflite"):
         self.device = torch.device('cpu')
         self.initliazlie_interpreter(model_dir_path)
 
@@ -19,7 +19,7 @@ class DetectionModelEdgeTPU:
             'Darwin': 'libedgetpu.1.dylib',
             'Windows': 'edgetpu.dll'}[platform.system()]
         if DetectionModelEdgeTPU.TEST_TFLite:
-            self.interpreter = tflite.Interpreter("appResources/models/yv5/yv5s_ko_uint8_384_512.tflite")
+            self.interpreter = tflite.Interpreter("AppResources/models/yv5/yv5s_ko_uint8_384_512.tflite")
         else:
             self.interpreter = tflite.Interpreter(path, experimental_delegates=[tflite.load_delegate(self.delegate)])
         self.interpreter.allocate_tensors()
@@ -81,20 +81,21 @@ class DetectionModelEdgeTPU:
         _box[:, 3] = x[:, 1] + x[:, 3] / 2  # bottom right y
         return _box
 
-    def draw_boxes_and_labels(self, output_data, frame):
+    def draw_detections(self, output_data, frame, labels=False):
         _image = frame
         for i, det in enumerate(output_data):
             _xy_min = (round(det[0]), round(det[1]))
             _xy_max = (round(det[2]), round(det[3]))
             _score = (round(det[4], 2))
             _image = cv2.rectangle(_image, _xy_min, _xy_max, (140, 8, 189), 2)
-            _image = cv2.putText(_image, str(_score), (_xy_min[0], _xy_min[1]-10), cv2.FONT_HERSHEY_SIMPLEX, 1, (140, 8, 189), 1, cv2.LINE_AA)
+            if labels:
+                _image = cv2.putText(_image, str(_score), (_xy_min[0], _xy_min[1]-10), cv2.FONT_HERSHEY_SIMPLEX, 1, (140, 8, 189), 1, cv2.LINE_AA)
         return _image
 
 
 if __name__ == '__main__':
-    detection_model = DetectionModelEdgeTPU(model_dir_path="appResources/models/yv5/yv5s_kco_uint8_384_512_edgetpu.tflite")
-    img = cv2.imread("appResources/models/test_images/test_image_03.jpg")
+    detection_model = DetectionModelEdgeTPU(model_dir_path="AppResources/models/yv5/yv5s_kco_uint8_384_512_edgetpu.tflite")
+    img = cv2.imread("AppResources/models/test_images/test_image_03.jpg")
 
     preprocess_timer_start = datetime.datetime.now()
     img_det, orig_image = detection_model.preproces_image_for_detect(img)
@@ -106,7 +107,7 @@ if __name__ == '__main__':
 
     nms_timer_start = datetime.datetime.now()
     output_nms = detection_model.nms(output)
-    image = detection_model.draw_boxes_and_labels(output_nms, orig_image)
+    image = detection_model.draw_detections(output_nms, orig_image, labels=True)
     nms_timer_stop = datetime.datetime.now()
 
     timer_end = datetime.datetime.now()

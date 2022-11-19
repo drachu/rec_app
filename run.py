@@ -9,9 +9,8 @@ if __name__ == '__main__':
         from CamerasProcessing import StereoCamera
         import cv2
         stereoCamera = StereoCamera()
-        StereoCamera.detection.value = True
-        StereoCamera.detection_labels.value = True
-        StereoCamera.detection_boxes.value = True
+        StereoCamera.detection_mode.detection = True
+        StereoCamera.detection_mode.labels = True
         while True:
             frame = StereoCamera.synchronization_queue.get()
             cv2.imshow('frame', frame)
