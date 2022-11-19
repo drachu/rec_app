@@ -131,10 +131,10 @@ def synchronization(camera_RGB, camera_IR, receive_RGB, receive_IR, recording, d
                             output_data = detection_model.detection(image_det)
                             output_nms = detection_model.nms(output_data)
                             if StereoCamera.detection_labels:
-                                combined_frame = detection_model.draw_boxes_and_labels(output_nms, image_orig)
+                                image_orig = detection_model.draw_boxes_and_labels(output_nms, image_orig)
                             elif StereoCamera.detection_boxes:
-                                combined_frame = detection_model.draw_boxes_and_labels(output_nms, image_orig)
-                            # combined_frame = cv2.resize(image_orig, (640, 488), interpolation=cv2.INTER_LANCZOS4)
+                                image_orig = detection_model.draw_boxes_and_labels(output_nms, image_orig)
+                            combined_frame = cv2.resize(image_orig, (640, 488), interpolation=cv2.INTER_LANCZOS4)
                         else:
                             results = detection_model.model(combined_frame)
                             if results:
