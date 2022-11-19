@@ -76,7 +76,6 @@ def resize_and_map(name, frame_to_calibrate, stereo_map_x, stereo_map_y):
     if name == "RGB":
         frame_mapped = cv2.warpAffine(frame_mapped, np.float32([[1, 0, -45], [0, 1, -40]]), (640, 488))[0:488 - 70, 0:640 - 80]
         frame_mapped = cv2.resize(frame_mapped, (640, 488), interpolation=cv2.INTER_AREA)
-    frame_mapped = cv2.resize(frame_to_calibrate, (512, 384), interpolation=cv2.INTER_LANCZOS4)
     return frame_mapped
 
 
@@ -134,10 +133,10 @@ def synchronization(camera_RGB, camera_IR, receive_RGB, receive_IR, recording, d
                             output_data = detection_model.detection(image_det)
                             output_nms = detection_model.nms(output_data)
                             if StereoCamera.detection_labels:
-                                combined_frame = detection_model.draw_boxes_and_labels(output_nms, image_orig)
+                                image_orig = detection_model.draw_boxes_and_labels(output_nms, image_orig)
                             elif StereoCamera.detection_boxes:
-                                combined_frame = detection_model.draw_boxes_and_labels(output_nms, image_orig)
-                            # combined_frame = cv2.resize(image_orig, (640, 488), interpolation=cv2.INTER_LANCZOS4)
+                                image_orig = detection_model.draw_boxes_and_labels(output_nms, image_orig)
+                            combined_frame = cv2.resize(image_orig, (640, 488), interpolation=cv2.INTER_LANCZOS4)
                         else:
                             results = detection_model.model(combined_frame)
                             if results:
