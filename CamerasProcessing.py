@@ -109,7 +109,7 @@ class SynchronizationProcess(Process):
                         output_data = self.detection_model.detection(image_det)
                         output_nms = self.detection_model.nms(output_data)
                         image_orig = self.detection_model.draw_detections(output_nms, image_orig, labels=detection_mode.labels)
-                        combined_frame = cv2.resize(image_orig, (640, 488), interpolation=cv2.INTER_LANCZOS4)
+                        combined_frame = image_orig
                     else:
                         results = self.detection_model.model(combined_frame)
                         if results:
