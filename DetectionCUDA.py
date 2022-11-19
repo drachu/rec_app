@@ -2,7 +2,7 @@ import cv2
 import torch
 import datetime
 class DetectionModelCUDA():
-    def __init__(self, model_dir_path='appResources/models/yv5/yv5m.pt',class_names=['pedestrian']):
+    def __init__(self, model_dir_path='appResources/models/yv5/yv5s_ko.pt',class_names=['pedestrian']):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model_dir_path = model_dir_path
         self.class_names = class_names
@@ -20,7 +20,7 @@ def draw_detections(results, image):
 
 if __name__ == '__main__':
     detection_model = DetectionModelCUDA()
-    test_image = cv2.imread("appResources/images/test_image_00.jpg")
+    test_image = cv2.imread("appResources/models/test_images/test_image_02.jpg")
     timer_start = datetime.datetime.now()
 
     results = detection_model.model(test_image)

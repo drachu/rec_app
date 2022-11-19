@@ -9,7 +9,7 @@ import datetime
 class DetectionModelEdgeTPU:
     TEST_TFLite = False
 
-    def __init__(self, model_dir_path="appResources/models/yv5/yv5s_kco_uint8_384_512_edgetpu.tflite"):
+    def __init__(self, model_dir_path="appResources/models/yv5/yv5s_ko_uint8_384_512_edgetpu.tflite"):
         self.device = torch.device('cpu')
         self.initliazlie_interpreter(model_dir_path)
 
@@ -19,7 +19,7 @@ class DetectionModelEdgeTPU:
             'Darwin': 'libedgetpu.1.dylib',
             'Windows': 'edgetpu.dll'}[platform.system()]
         if DetectionModelEdgeTPU.TEST_TFLite:
-            self.interpreter = tflite.Interpreter("appResources/models/yv5/yv5s_kco_uint8_384_512.tflite")
+            self.interpreter = tflite.Interpreter("appResources/models/yv5/yv5s_ko_uint8_384_512.tflite")
         else:
             self.interpreter = tflite.Interpreter(path, experimental_delegates=[tflite.load_delegate(self.delegate)])
         self.interpreter.allocate_tensors()
@@ -96,16 +96,24 @@ class DetectionModelEdgeTPU:
 
 if __name__ == '__main__':
     detection_model = DetectionModelEdgeTPU(model_dir_path="appResources/models/yv5/yv5s_kco_uint8_384_512_edgetpu.tflite")
-    img = cv2.imread("appResources/images/test_image_00.jpg")
+    img = cv2.imread("appResources/models/test_images/test_image_03.jpg")
 
+    preprocess_timer_start = datetime.datetime.now()
     img_det, orig_image = detection_model.preproces_image_for_detect(img)
+    preprocess_timer_stop = datetime.datetime.now()
+
+    detection_timer_start = datetime.datetime.now()
     output = detection_model.detection(img_det)
-    timer_start = datetime.datetime.now()
-    
+    detection_timer_stop = datetime.datetime.now()
+
+    nms_timer_start = datetime.datetime.now()
     output_nms = detection_model.nms(output)
     image = detection_model.draw_boxes_and_labels(output_nms, orig_image)
+    nms_timer_stop = datetime.datetime.now()
 
     timer_end = datetime.datetime.now()
-    print("Detection time: " + str((timer_end-timer_start).microseconds/1000) + " ms")
+    print("Preprocess time: " + str((preprocess_timer_stop - preprocess_timer_start).microseconds / 1000) + " ms")
+    print("Detection time: " + str((detection_timer_stop - detection_timer_start).microseconds/1000) + " ms")
+    print("NMS and box drawing time: " + str((nms_timer_stop - nms_timer_start).microseconds / 1000) + " ms")
     cv2.imshow('test_image', image)
     cv2.waitKey(0)
