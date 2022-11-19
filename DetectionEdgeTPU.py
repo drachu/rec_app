@@ -93,7 +93,7 @@ class DetectionModelEdgeTPU:
 
 if __name__ == '__main__':
     detection_model = DetectionModelEdgeTPU(model_dir_path="appResources/models/yv5/yv5s_kco_uint8_384_512_edgetpu.tflite")
-    img = cv2.imread("appResources/models/test_images/test_image_03.jpg")
+    img = cv2.imread("appResources/models/test_images/test_image_04.jpg")
     img = cv2.resize(img, (512, 384), interpolation=cv2.INTER_LINEAR)
 
     preprocess_timer_start = datetime.datetime.now()
