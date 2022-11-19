@@ -29,7 +29,8 @@ class DetectionModelEdgeTPU:
         self.output_scale, self.output_zero_point = self.output_details[0]['quantization']
 
     def preproces_image_for_detect(self, frame):
-        _det_image = frame.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
+        _det_image = cv2.resize(frame, (512, 384), interpolation=cv2.INTER_LINEAR)
+        _det_image = _det_image.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
         _det_image = np.ascontiguousarray(_det_image)  # contiguous
         _det_image = torch.from_numpy(_det_image).to(self.device)
         _det_image = (_det_image.float()/255)[None]
