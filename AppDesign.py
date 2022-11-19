@@ -5,6 +5,7 @@ from kivymd.material_resources import dp
 from kivymd.uix.behaviors.toggle_behavior import MDToggleButton
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.card import MDCard
+from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.gridlayout import MDGridLayout
 from kivymd.uix.button import MDRaisedButton, MDFlatButton, MDFloatingActionButtonSpeedDial, MDIconButton
 from kivy.uix.image import Image
@@ -17,7 +18,7 @@ from kivymd.uix.button import MDRoundFlatIconButton
 from kivy.core.window import Window
 from kivymd.uix.spinner.spinner import MDSpinner
 from kivymd.uix.dialog.dialog import MDDialog
-from kivymd.uix.label import MDLabel
+from kivymd.uix.label import MDLabel, MDIcon
 
 
 def generate_left_card(self):
@@ -96,6 +97,24 @@ def generate_memory_info_card(self):
     self.memory_info_card.add_widget(self.memory_info_layout)
     return self.memory_info_card
 
+def generate_detection_info_card(self):
+    self.detection_info_card = MDCard(size_hint=(None, None),
+                                      size=(150, 40),
+                                      elevation=3,
+                                      padding=10,
+                                      radius=20,
+                                      pos_hint={'center_x': .5, 'center_y': .95})
+    self.detection_info_layout = MDGridLayout(cols=2, spacing=10)
+    self.detection_info_icon = MDIcon(icon="square-off-outline",
+                                      valign='middle')
+    self.detection_info_label = MDLabel(text="Detekcja: wył.",
+                                        valign='middle')
+    self.detection_info_layout.add_widget(self.detection_info_icon)
+    self.detection_info_layout.add_widget(self.detection_info_label)
+    self.detection_info_card.add_widget(self.detection_info_layout)
+    return self.detection_info_card
+
+
 @mainthread
 def log_camera_event(self, event_text):
     self.log_list.add_widget(OneLineIconListItem(
@@ -119,8 +138,12 @@ class CameraScreen(Screen):
     def __init__(self, app_self):
         Screen.__init__(self)
         self.name = "Camera"
+        app_self.camera_layout = MDFloatLayout(size_hint=(1, 1))
+        app_self.detection_info_card = generate_detection_info_card(app_self)
         app_self.image = Image()
-        self.add_widget(app_self.image)
+        app_self.camera_layout.add_widget(app_self.image)
+        app_self.camera_layout.add_widget(app_self.detection_info_card)
+        self.add_widget(app_self.camera_layout)
 
 
 class LoadingScreen(Screen):

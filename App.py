@@ -48,7 +48,6 @@ class MainApp(MDApp):
 
     def build(self):
         self.title = "Detection App"
-        self.icon = 'appResources/images/app_logo.ico'
         self.screen = generate_app_design(self)
         videoThread = self.VideoThread(self)
         videoThread.daemon = True
@@ -128,6 +127,13 @@ class MainApp(MDApp):
     def switch_detection_mode(self, detection, detection_boxes, detection_labels):
         StereoCamera.detection.value, StereoCamera.detection_boxes.value, StereoCamera.detection_labels.value =\
             detection, detection_boxes, detection_labels
+        self.detection_info_label.text = "Detekcja: wł." if StereoCamera.detection.value else "Detekcja: wył."
+        if detection_labels:
+            self.detection_info_icon.icon = 'label-multiple-outline'
+        elif detection_boxes:
+            self.detection_info_icon.icon = 'vector-square'
+        else:
+            self.detection_info_icon.icon = 'square-off-outline'
 
     def switch_theme_mode(self, instance, state):
         if state:
