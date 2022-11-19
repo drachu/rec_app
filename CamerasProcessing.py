@@ -87,8 +87,6 @@ class SynchronizationProcess(Process):
         StereoCamera.video_queue_IR, StereoCamera.video_queue_RGB, StereoCamera.camera_log, StereoCamera.camera_errors,
         StereoCamera.recorded_frames_IR, StereoCamera.recorded_frames_RGB))
 
-
-
 def synchronization(camera_RGB, camera_IR, receive_RGB, receive_IR, recording, detection,
                     cameras_reading, synchronization_queue, video_queue_IR, video_queue_RGB,
                     camera_log, camera_errors, recorded_frames_IR, recorded_frames_RGB):
@@ -133,10 +131,10 @@ def synchronization(camera_RGB, camera_IR, receive_RGB, receive_IR, recording, d
                             output_data = detection_model.detection(image_det)
                             output_nms = detection_model.nms(output_data)
                             if StereoCamera.detection_labels:
-                                image_orig = detection_model.draw_boxes_and_labels(output_nms, image_orig)
+                                combined_frame = detection_model.draw_boxes_and_labels(output_nms, image_orig)
                             elif StereoCamera.detection_boxes:
-                                image_orig = detection_model.draw_boxes_and_labels(output_nms, image_orig)
-                            combined_frame = cv2.resize(image_orig, (640, 488), interpolation=cv2.INTER_LANCZOS4)
+                                combined_frame = detection_model.draw_boxes_and_labels(output_nms, image_orig)
+                            # combined_frame = cv2.resize(image_orig, (640, 488), interpolation=cv2.INTER_LANCZOS4)
                         else:
                             results = detection_model.model(combined_frame)
                             if results:
