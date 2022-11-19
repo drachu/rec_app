@@ -7,7 +7,7 @@ import torchvision
 import datetime
 
 class DetectionModelEdgeTPU:
-    TEST_TFLite = True
+    TEST_TFLite = False
 
     def __init__(self, model_dir_path="appResources/models/yv5/yv5s_ko_uint8_384_512_edgetpu.tflite"):
         self.device = torch.device('cpu')
