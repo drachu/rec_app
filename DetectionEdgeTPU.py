@@ -7,7 +7,7 @@ import torchvision
 import datetime
 
 class DetectionModelEdgeTPU:
-    TEST_TFLite = False
+    TEST_TFLite = True
 
     def __init__(self, model_dir_path="appResources/models/yv5/yv5s_ko_uint8_384_512_edgetpu.tflite"):
         self.device = torch.device('cpu')
@@ -29,14 +29,11 @@ class DetectionModelEdgeTPU:
         self.output_scale, self.output_zero_point = self.output_details[0]['quantization']
 
     def preproces_image_for_detect(self, frame):
-        _orig_image = cv2.resize(frame, (512, 384), interpolation=cv2.INTER_LINEAR)
-        _det_image = _orig_image.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
+        _det_image = frame.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
         _det_image = np.ascontiguousarray(_det_image)  # contiguous
         _det_image = torch.from_numpy(_det_image).to(self.device)
-        _det_image = _det_image.float()
-        _det_image /= 255
-        _det_image = _det_image[None]
-        return _det_image, _orig_image
+        _det_image = (_det_image.float()/255)[None]
+        return _det_image, frame
 
     def detection(self, frame):
         _batch, _channel, _height, _width = frame.shape
@@ -95,8 +92,10 @@ class DetectionModelEdgeTPU:
 
 
 if __name__ == '__main__':
+    torch_xla.
     detection_model = DetectionModelEdgeTPU(model_dir_path="appResources/models/yv5/yv5s_kco_uint8_384_512_edgetpu.tflite")
     img = cv2.imread("appResources/models/test_images/test_image_03.jpg")
+    img = cv2.resize(img, (512, 384), interpolation=cv2.INTER_LINEAR)
 
     preprocess_timer_start = datetime.datetime.now()
     img_det, orig_image = detection_model.preproces_image_for_detect(img)
