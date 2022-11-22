@@ -1,3 +1,5 @@
+import os
+
 import cv2
 import torch
 from DetectionEdgeTPU import DetectionModelEdgeTPU
@@ -7,13 +9,15 @@ import logging
 LOGGER = logging.getLogger(__name__)
 
 # pytest edgetpu_tflite_test.py::test_dataset_speed to run one test
-model_path_edgetpu = "../AppResources/models/yv5/yv5s_kco_uint8_384_512_edgetpu.tflite"
-dataset_test_path = "../datasets/PedestrianPGETIs179985/test/images"
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))[:-5]
+model_path_edgetpu = "AppResources/models/yv5/yv5s_kco_uint8_384_512_edgetpu.tflite"
+dataset_test_path = "datasets/PedestrianPGETIs179985/test/images"
 dataset_images_to_test = 1  # -1 will make test go through whole dataset
-image_path = "test_images/test_image_00.jpg"
+image_path = "tests/test_images/test_image_00.jpg"
 DetectionModelEdgeTPU.TEST_TFLite = True
 
 def test_dataset_speed():
+    os.chdir(ROOT_DIR)
     results = []
     detection_model = DetectionModelEdgeTPU(model_dir_path=model_path_edgetpu)
     print("\n")
@@ -33,6 +37,7 @@ def test_dataset_speed():
 
 
 def test_load_model():
+    os.chdir(ROOT_DIR)
     detection_model = DetectionModelEdgeTPU(model_dir_path=model_path_edgetpu)
     input = detection_model.input_details[0]['shape']
     assert input[0] == 1
@@ -47,6 +52,7 @@ def test_load_model():
     LOGGER.info("Valid input: %s", output)
 
 def test_preprocess():
+    os.chdir(ROOT_DIR)
     detection_model = DetectionModelEdgeTPU(model_dir_path=model_path_edgetpu)
     img = cv2.imread(image_path)
     img = cv2.resize(img, (512, 384), interpolation=cv2.INTER_LINEAR)
@@ -61,6 +67,7 @@ def test_preprocess():
     print("\nPreprocess time: " + str((preprocess_timer_stop - preprocess_timer_start).microseconds / 1000) + " ms")
 
 def test_nms():
+    os.chdir(ROOT_DIR)
     detection_model = DetectionModelEdgeTPU(model_dir_path=model_path_edgetpu)
     img = cv2.imread(image_path)
     img = cv2.resize(img, (512, 384), interpolation=cv2.INTER_LINEAR)
@@ -76,6 +83,7 @@ def test_nms():
 
 
 def test_single_speed():
+    os.chdir(ROOT_DIR)
     detection_model = DetectionModelEdgeTPU(model_dir_path=model_path_edgetpu)
     assert detection_model is not None
     img = cv2.imread(image_path)

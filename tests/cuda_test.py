@@ -9,19 +9,21 @@ LOGGER = logging.getLogger(__name__)
 
 # pytest cuda_test.py::test_dataset_speed to run one test
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))[:-5]
-model_path_pytorch = ROOT_DIR + "AppResources/models/yv5/yv5s_kco.pt"
-dataset_test_path = ROOT_DIR + "datasets/PedestrianPGETIs179985/test/images"
+model_path_pytorch = "AppResources/models/yv5/yv5s_kco.pt"
+dataset_test_path = "datasets/PedestrianPGETIs179985/test/images"
 dataset_images_to_test = 5  # -1 will make test go through whole dataset
-image_path = ROOT_DIR + "AppResources/models/test_images/test_image_00.jpg"
+image_path = "tests/test_images/test_image_00.jpg"
 
 
 @pytest.mark.unit
 def test_load_model():
+    os.chdir(ROOT_DIR)
     detection_model = DetectionModelCUDA(model_dir_path=model_path_pytorch)
     assert detection_model.model is not None
     print("\nSuccessfuly loaded model on device: " + str(detection_model.device))
 
 def test_dataset_speed():
+    os.chdir(ROOT_DIR)
     results = []
     detection_model = DetectionModelCUDA(model_dir_path=model_path_pytorch)
     print("\n")
@@ -38,6 +40,7 @@ def test_dataset_speed():
     print("Used dataset: " + dataset_test_path)
 
 def test_single_speed():
+    os.chdir(ROOT_DIR)
     detection_model = DetectionModelCUDA(model_dir_path=model_path_pytorch)
     test_image = cv2.imread(image_path)
     timer_start = datetime.datetime.now()

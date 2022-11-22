@@ -20,6 +20,7 @@ class StereoCamera:
 
     camera_switch = Value(c_bool, True)
     cameras_reading = Value(c_bool, False)
+    camera_colors_IR = Value(c_bool, False)
 
     synchronization_queue = Queue()
     video_queue_IR = Queue()
@@ -68,11 +69,13 @@ class SynchronizationProcess(Process):
         # self.detection_model = None
         # event_log.put_log("Could not load model")
 
-    def preprocess_combine_frames(self, frame_IR, frame_RGB):
+    def preprocess_combine_frames(self, frame_IR, frame_RGB, camera_colors):
         _combined_frame = cv2.addWeighted(frame_RGB, 0.3, frame_IR, 0.7, 0.0)
         _combined_frame = cv2.cvtColor(_combined_frame, cv2.COLOR_GRAY2BGR)
         _frame_IR = cv2.cvtColor(frame_IR, cv2.COLOR_GRAY2BGR)
         _frame_RGB = cv2.cvtColor(frame_RGB, cv2.COLOR_GRAY2BGR)
+        if camera_colors.value:
+            _frame_IR = cv2.applyColorMap(_frame_IR, cv2.COLORMAP_JET)
         return _combined_frame, _frame_IR, _frame_RGB
 
     def __init__(self):
@@ -80,18 +83,18 @@ class SynchronizationProcess(Process):
         Process.__init__(self, target=self.synchronization, args=(StereoCamera.detection_mode,
         StereoCamera.display_mode, StereoCamera.recording_module,
         StereoCamera.cameras_reading, StereoCamera.synchronization_queue, StereoCamera.video_queue_IR,
-        StereoCamera.video_queue_RGB, StereoCamera.event_log), daemon=True)
+        StereoCamera.video_queue_RGB, StereoCamera.event_log, StereoCamera.camera_colors_IR), daemon=True)
 
     def synchronization(self, detection_mode, display_mode, recording_module,
                         cameras_reading, synchronization_queue, video_queue_IR, video_queue_RGB,
-                        event_log):
+                        event_log, camera_colors):
         event_log.put_log("Sync process started")
         self.load_detection_model(event_log)
         while True:
                 cameras_reading.value = True
                 frame_IR = video_queue_IR.get()
                 frame_RGB = video_queue_RGB.get()
-                combined_frame, frame_IR, frame_RGB = self.preprocess_combine_frames(frame_IR, frame_RGB)
+                combined_frame, frame_IR, frame_RGB = self.preprocess_combine_frames(frame_IR, frame_RGB, camera_colors)
 
                 if detection_mode.detection and self.detection_model:
                     if isinstance(self.detection_model, DetectionModelEdgeTPU):

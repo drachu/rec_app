@@ -55,13 +55,15 @@ def generate_log_card(self):
 
 
 def generate_information_layout(self):
-    self.information_layout = MDGridLayout(cols=2, size_hint=(1, 0.1))
+    self.information_layout = MDBoxLayout(orientation='horizontal', size_hint=(1, 0.1))
     self.about_instruction_image = Image(source=r"AppResources/images/about.jpg")
-    self.information_button = MDIconButton(icon='information-outline', on_press=self.show_info_dialog)
-    self.switch_theme = MDSwitch(active=True)
+    self.information_button = MDIconButton(icon='information-outline', on_press=self.show_info_dialog, size_hint=(0.3, 1))
+    self.show_colors_button = MDIconButton(icon='invert-colors-off', on_press=self.show_ir_colors, size_hint=(0.3, 1))
+    self.switch_theme = MDSwitch(active=True, size_hint=(0.3, 1), pos_hint={"center_y": 0.5, "center_x:": 0.35})
     self.switch_theme.bind(active=self.switch_theme_mode)
     self.information_layout.add_widget(self.information_button)
     self.information_layout.add_widget(self.switch_theme)
+    self.information_layout.add_widget(self.show_colors_button)
     return self.information_layout
 
 

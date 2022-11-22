@@ -156,6 +156,14 @@ class MainApp(MDApp):
         else:
             self.theme_cls.theme_style = "Light"
 
+    def show_ir_colors(self, instance):
+        if StereoCamera.camera_colors_IR.value:
+            StereoCamera.camera_colors_IR.value = False
+            self.show_colors_button.icon = "invert-colors-off"
+        else:
+            StereoCamera.camera_colors_IR.value = True
+            self.show_colors_button.icon = "invert-colors"
+
     def show_error_dialog(self):
         if not MainApp.error_dialog:
             StereoCamera.camera_errors = list(dict.fromkeys(StereoCamera.camera_errors))
