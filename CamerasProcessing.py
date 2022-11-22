@@ -18,8 +18,7 @@ class StereoCamera:
     event_log = EventLog()
     recording_module = RecordingModule()
 
-    camera_reading_RGB = Value(c_bool, True)
-    camera_reading_IR = Value(c_bool, False)
+    camera_switch = Value(c_bool, True)
     cameras_reading = Value(c_bool, False)
 
     synchronization_queue = Queue()
@@ -121,7 +120,7 @@ class SynchronizationProcess(Process):
 class CameraProcess(Process):
 
     def __init__(self, name, cam_id, stereo_map, TEST=False):
-        Process.__init__(self, target=self.start_camera, args=(StereoCamera.camera_reading_RGB, StereoCamera.camera_reading_IR,
+        Process.__init__(self, target=self.start_camera, args=(StereoCamera.camera_switch,
         StereoCamera.video_queue_IR, StereoCamera.video_queue_RGB, StereoCamera.event_log), daemon=True)
         self.name = name
         self.cam_id = cam_id
@@ -146,7 +145,7 @@ class CameraProcess(Process):
             frame_mapped = cv2.resize(frame_mapped, (640, 488), interpolation=cv2.INTER_AREA)
         return frame_mapped
 
-    def start_camera(self, camera_reading_RGB, camera_reading_IR,
+    def start_camera(self, camera_switch,
                  video_queue_IR, video_queue_RGB, event_log):
         if self.name == "RGB" and platform.system() == "Windows":
             cam = cv2.VideoCapture(self.cam_id, cv2.CAP_DSHOW)
@@ -168,19 +167,19 @@ class CameraProcess(Process):
             if not self.TEST:
                 frame = self.resize_and_map(frame)
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            if self.name == "IR":
+            if self.name == "IR" and camera_switch.value:
                 frame = cv2.bitwise_not(frame)
-            put_frame(self.name, frame, camera_reading_RGB, camera_reading_IR, video_queue_IR, video_queue_RGB)
+                put_frame(self.name, frame, camera_switch, video_queue_IR, video_queue_RGB)
+            elif self.name == "RGB" and not camera_switch.value:
+                put_frame(self.name, frame, camera_switch, video_queue_IR, video_queue_RGB)
 
 
-def put_frame(name, frame, camera_reading_RGB, camera_reading_IR, video_queue_IR, video_queue_RGB):
+def put_frame(name, frame, camera_switch, video_queue_IR, video_queue_RGB):
     StereoCamera.synchronization_lock.acquire()
-    if name == "IR" and camera_reading_RGB.value:
-        camera_reading_RGB.value = False
+    if name == "IR":
         video_queue_IR.put(frame)
-        camera_reading_IR.value = True
-    elif name == "RGB" and camera_reading_IR.value:
-        camera_reading_IR.value = False
+        camera_switch.value = False
+    elif name == "RGB":
         video_queue_RGB.put(frame)
-        camera_reading_RGB.value = True
+        camera_switch.value = True
     StereoCamera.synchronization_lock.release()

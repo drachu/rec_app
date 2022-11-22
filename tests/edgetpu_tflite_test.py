@@ -10,7 +10,7 @@ LOGGER = logging.getLogger(__name__)
 model_path_edgetpu = "../AppResources/models/yv5/yv5s_kco_uint8_384_512_edgetpu.tflite"
 dataset_test_path = "../datasets/PedestrianPGETIs179985/test/images"
 dataset_images_to_test = 1  # -1 will make test go through whole dataset
-image_path = "../AppResources/models/test_images/test_image_00.jpg"
+image_path = "test_images/test_image_00.jpg"
 DetectionModelEdgeTPU.TEST_TFLite = True
 
 def test_dataset_speed():
