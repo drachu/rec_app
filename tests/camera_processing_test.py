@@ -12,11 +12,28 @@ LOGGER = logging.getLogger(__name__)
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))[:-5]
 RGB_CAMERA_ID = None
 IR_CAMERA_ID = None
+FPS_TEST_TIME = 60  # seconds
 
 def test_calibration_mapping():
     os.chdir(ROOT_DIR)
     stereo_camera = StereoCamera(TEST=True)
     map_rgb, map_ir = stereo_camera.get_calibration_mapping('AppResources/calibration/data/stereoMap.xml')
+    rgb_image = cv2.imread("tests/test_images/test_rgb_image.jpg")
+    rgb_image = cv2.resize(rgb_image, (640, 488), interpolation=cv2.INTER_AREA)
+    ir_image = cv2.imread("tests/test_images/test_ir_image.jpg")
+    rgb_image = cv2.resize(ir_image, (640, 488), interpolation=cv2.INTER_AREA)
+    rgb_image_mapped = cv2.remap(rgb_image, map_rgb.map_x,
+                                 map_rgb.map_y,
+                                 cv2.INTER_LANCZOS4,
+                                 cv2.BORDER_CONSTANT, 0)
+    assert rgb_image_mapped.shape == (488, 640, 3)
+    ir_image_mapped = cv2.remap(ir_image, map_ir.map_x,
+                                 map_ir.map_y,
+                                 cv2.INTER_LANCZOS4,
+                                 cv2.BORDER_CONSTANT, 0)
+    assert ir_image_mapped.shape == (488, 640, 3)
+    combined_frame = cv2.addWeighted(rgb_image_mapped, 0.5, ir_image_mapped, 0.5, 0.0)
+
 
 
 def test_any_camera_connection():
@@ -89,6 +106,23 @@ def test_whole_camera_connection():
     if frame is None:
         LOGGER.error("Frame has not been received!")
         assert frame is not None
+
+def test_frame_speed():
+    os.chdir(ROOT_DIR)
+    stereo_camera = StereoCamera()
+    frame = StereoCamera.synchronization_queue.get(timeout=15)
+    counter_end = time.time() + FPS_TEST_TIME
+    frames = 0
+    while time.time() < counter_end:
+        frame = StereoCamera.synchronization_queue.get()
+        frames += 1
+    FPS = round(frames/60, 2)
+    print("\nCamera achieved average of " + str(FPS) + " frames per second!")
+    print("\nTest statistics:")
+    print("\nFrames: " + str(frames))
+    print("\nTime: " + str(FPS_TEST_TIME) + "s")
+
+
 
 def kill_processes(proc):
     for p in proc:
