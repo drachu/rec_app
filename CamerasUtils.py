@@ -1,5 +1,5 @@
-from multiprocessing import Value, Array, Lock, Manager
-from ctypes import c_bool, c_wchar_p
+from multiprocessing import Value
+from ctypes import c_bool
 
 class CalibrationMapping:
     def __init__(self, map_x, map_y):

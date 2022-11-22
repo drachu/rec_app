@@ -46,22 +46,14 @@ class StereoCamera:
         camera_process_RGB.start()
         camera_process_IR.start()
 
-    def __init__(self):
+    def __init__(self, TEST = False):
         cameras_data_manager = Manager()
         StereoCamera.event_log.camera_log = cameras_data_manager.list()
         StereoCamera.event_log.camera_errors = cameras_data_manager.list()
         StereoCamera.recording_module.recorded_frames_RGB = cameras_data_manager.list()
         StereoCamera.recording_module.recorded_frames_IR = cameras_data_manager.list()
-        StereoCamera.start(self)
-
-
-def resize_and_map(name, frame_to_calibrate, stereo_map):
-    resize = cv2.resize(frame_to_calibrate, (640, 488), interpolation=cv2.INTER_LANCZOS4)
-    frame_mapped = cv2.remap(resize, stereo_map.map_x, stereo_map.map_y, cv2.INTER_LANCZOS4, cv2.BORDER_CONSTANT, 0)
-    if name == "RGB":
-        frame_mapped = cv2.warpAffine(frame_mapped, np.float32([[1, 0, -45], [0, 1, -40]]), (640, 488))[0:488 - 70, 0:640 - 80]
-        frame_mapped = cv2.resize(frame_mapped, (640, 488), interpolation=cv2.INTER_AREA)
-    return frame_mapped
+        if not TEST:
+            StereoCamera.start(self)
 
 
 class SynchronizationProcess(Process):
@@ -71,12 +63,11 @@ class SynchronizationProcess(Process):
             self.detection_model = DetectionModelEdgeTPU()
             event_log.put_log("EdgeTPU model loaded")
         except:
-            try:
-                self.detection_model = DetectionModelCUDA()
-                event_log.put_log("CUDA/CPU model loaded")
-            except:
-                self.detection_model = None
-                event_log.put_log("Could not load model")
+            pass
+        self.detection_model = DetectionModelCUDA()
+        event_log.put_log("CUDA/CPU model loaded")
+        # self.detection_model = None
+        # event_log.put_log("Could not load model")
 
     def preprocess_combine_frames(self, frame_IR, frame_RGB):
         _combined_frame = cv2.addWeighted(frame_RGB, 0.3, frame_IR, 0.7, 0.0)
@@ -129,12 +120,31 @@ class SynchronizationProcess(Process):
 
 class CameraProcess(Process):
 
-    def __init__(self, name, cam_id, stereo_map):
+    def __init__(self, name, cam_id, stereo_map, TEST=False):
         Process.__init__(self, target=self.start_camera, args=(StereoCamera.camera_reading_RGB, StereoCamera.camera_reading_IR,
         StereoCamera.video_queue_IR, StereoCamera.video_queue_RGB, StereoCamera.event_log), daemon=True)
         self.name = name
         self.cam_id = cam_id
         self.stereo_map = stereo_map
+        self.TEST = TEST
+
+    def resize_and_map(self, frame_to_calibrate):
+        # przeskalowanie obu klatek do jednego rozmiaru
+        resize = cv2.resize(frame_to_calibrate, (640, 488), interpolation=cv2.INTER_LANCZOS4)
+        # wprowadzenie mapowania
+        frame_mapped = cv2.remap(resize, self.stereo_map.map_x,
+                                 self.stereo_map.map_y,
+                                 cv2.INTER_LANCZOS4,
+                                 cv2.BORDER_CONSTANT, 0)
+        # ręczne zmiany tylko dla klatek kamery RGB
+        if self.name == "RGB":
+            #dodatkowa translacja oraz repozycja
+            frame_mapped = cv2.warpAffine(frame_mapped,
+                                          np.float32([[1, 0, -45], [0, 1, -40]]),
+                                          (640, 488))[0:488 - 70, 0:640 - 80]
+            # powtórne przeskalowanie do porządanej rozdzielczości
+            frame_mapped = cv2.resize(frame_mapped, (640, 488), interpolation=cv2.INTER_AREA)
+        return frame_mapped
 
     def start_camera(self, camera_reading_RGB, camera_reading_IR,
                  video_queue_IR, video_queue_RGB, event_log):
@@ -155,7 +165,8 @@ class CameraProcess(Process):
                 time.sleep(1.0 / 8.7)
             elif self.name == "IR" and platform.system() == "Linux":
                 time.sleep(1.0 / 1000.0)
-            frame = resize_and_map(self.name, frame, self.stereo_map)
+            if not self.TEST:
+                frame = self.resize_and_map(frame)
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             if self.name == "IR":
                 frame = cv2.bitwise_not(frame)
@@ -172,6 +183,4 @@ def put_frame(name, frame, camera_reading_RGB, camera_reading_IR, video_queue_IR
         camera_reading_IR.value = False
         video_queue_RGB.put(frame)
         camera_reading_RGB.value = True
-    #except:
-        #StereoCamera.camera_errors.append(name + " frame put error!")
     StereoCamera.synchronization_lock.release()

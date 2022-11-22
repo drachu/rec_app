@@ -11,6 +11,7 @@ import cv2
 from AppResources import AppDesign
 from CamerasProcessing import StereoCamera
 from AppResources.AppDesign import generate_app_design, create_error_dialog
+import os
 
 from kivy.config import Config
 
@@ -197,6 +198,7 @@ def save_recording(name, records, app_self):
     app_self.update_memory_space()
 
 def run_app():
+    os.environ['KIVY_HOME'] = "/config/"
     Config.set('kivy', 'window_icon', 'AppResources/images/app_logo.ico')
     Config.write()
     MainApp().run()

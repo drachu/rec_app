@@ -1,2 +1,4 @@
 AppResources/models/yolov7_model.tflite
-rec_app_venv
+venv
+__pycache__
+__pycache__/

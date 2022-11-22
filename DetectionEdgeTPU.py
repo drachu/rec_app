@@ -5,11 +5,16 @@ import cv2
 import numpy as np
 import torchvision
 import datetime
+import glob
+import sys
+
+from IPython.utils.py3compat import execfile
+
 
 class DetectionModelEdgeTPU:
     TEST_TFLite = False
 
-    def __init__(self, model_dir_path="AppResources/models/yv5/yv5s_ko_uint8_384_512_edgetpu.tflite"):
+    def __init__(self, model_dir_path="AppResources/models/yv5/yv5n_ko_uint8_384_512_edgetpu.tflite"):
         self.device = torch.device('cpu')
         self.initliazlie_interpreter(model_dir_path)
 
@@ -19,7 +24,8 @@ class DetectionModelEdgeTPU:
             'Darwin': 'libedgetpu.1.dylib',
             'Windows': 'edgetpu.dll'}[platform.system()]
         if DetectionModelEdgeTPU.TEST_TFLite:
-            self.interpreter = tflite.Interpreter("AppResources/models/yv5/yv5s_ko_uint8_384_512.tflite")
+            path = path[:-15] + '.tflite'
+            self.interpreter = tflite.Interpreter(path)
         else:
             self.interpreter = tflite.Interpreter(path, experimental_delegates=[tflite.load_delegate(self.delegate)])
         self.interpreter.allocate_tensors()
@@ -47,7 +53,7 @@ class DetectionModelEdgeTPU:
         result[..., :4] *= [_width, _height, _width, _height]
         return torch.from_numpy(result).to(self.device)
 
-    def nms(self, predictions, conf_thres=0.45, iou_thres=0.30, max_det=300, nm=0):
+    def nms(self, predictions, conf_thres=0.45, iou_thres=0.30, nm=0):
         class_count = predictions.shape[2] - nm - 5  # number of classes
         prediction_candidates = predictions[..., 4] > conf_thres  # candidates
 
@@ -88,31 +94,17 @@ class DetectionModelEdgeTPU:
             _xy_max = (round(det[2]), round(det[3]))
             _score = (round(det[4], 2))
             _image = cv2.rectangle(_image, _xy_min, _xy_max, (140, 8, 189), 2)
-            _image = cv2.putText(_image, str(_score), (_xy_min[0], _xy_min[1]-10), cv2.FONT_HERSHEY_SIMPLEX, 1, (140, 8, 189), 1, cv2.LINE_AA)
+            if labels and round(det[2]) - round(det[0]) > 40:
+                _xy_top_right = (round(det[2]), round(det[1]))
+                _image = cv2.rectangle(_image, (_xy_min[0], _xy_min[1] - 20), _xy_top_right, (140, 8, 189), -1)
+                _image = cv2.putText(_image, str(_score), (_xy_min[0]+5, _xy_min[1]-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
         return _image
 
 
 if __name__ == '__main__':
-    detection_model = DetectionModelEdgeTPU(model_dir_path="AppResources/models/yv5/yv5s_kco_uint8_384_512_edgetpu.tflite")
-    img = cv2.imread("AppResources/models/test_images/test_image_00.jpg")
-    img = cv2.resize(img, (512, 384), interpolation=cv2.INTER_LINEAR)
-
-    preprocess_timer_start = datetime.datetime.now()
-    img_det, orig_image = detection_model.preproces_image_for_detect(img)
-    preprocess_timer_stop = datetime.datetime.now()
-
-    detection_timer_start = datetime.datetime.now()
-    output = detection_model.detection(img_det)
-    detection_timer_stop = datetime.datetime.now()
-
-    nms_timer_start = datetime.datetime.now()
-    output_nms = detection_model.nms(output)
-    image = detection_model.draw_detections(output_nms, orig_image, labels=True)
-    nms_timer_stop = datetime.datetime.now()
-
-    timer_end = datetime.datetime.now()
-    print("Preprocess time: " + str((preprocess_timer_stop - preprocess_timer_start).microseconds / 1000) + " ms")
-    print("Detection time: " + str((detection_timer_stop - detection_timer_start).microseconds/1000) + " ms")
-    print("NMS and box drawing time: " + str((nms_timer_stop - nms_timer_start).microseconds / 1000) + " ms")
-    cv2.imshow('test_image', image)
-    cv2.waitKey(0)
+    pass
+    # single_speed_test(image_test_path="AppResources/models/test_images/test_image_00.jpg",
+    #                   model_path="AppResources/models/yv5/yv5s_ko_uint8_384_512_edgetpu.tflite")
+    # dataset_speed_test(dataset_test_path="datasets/KAIST_DATASET_DAY/test/images",
+    #                    model_path="AppResources/models/yv5/yv5n_ko_uint8_384_512_edgetpu.tflite")
+    #python val.py --weights D:\rec_app\AppResources\models\yv5\yv5n_ko.pt --data datasets/PedestrianPGETIs179985/data.yaml --img 512
