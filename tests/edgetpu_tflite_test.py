@@ -10,7 +10,7 @@ LOGGER = logging.getLogger(__name__)
 
 # pytest edgetpu_tflite_test.py::test_dataset_speed to run one test
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))[:-5]
-model_path_edgetpu = "AppResources/models/yv5/yv5s_kco_uint8_384_512_edgetpu.tflite"
+model_path_edgetpu = "AppResources/models/yv5/yv5n_ko_uint8_384_512_edgetpu.tflite"
 dataset_test_path = "datasets/PedestrianPGETIs179985/test/images"
 dataset_images_to_test = 1  # -1 will make test go through whole dataset
 image_path = "tests/test_images/test_image_03.jpg"
