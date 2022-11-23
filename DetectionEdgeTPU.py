@@ -94,17 +94,8 @@ class DetectionModelEdgeTPU:
             _xy_max = (round(det[2]), round(det[3]))
             _score = (round(det[4], 2))
             _image = cv2.rectangle(_image, _xy_min, _xy_max, (140, 8, 189), 2)
-            if labels and round(det[2]) - round(det[0]) > 40:
+            if labels and round(det[2]) - round(det[0]) > 20:
                 _xy_top_right = (round(det[2]), round(det[1]))
                 _image = cv2.rectangle(_image, (_xy_min[0], _xy_min[1] - 20), _xy_top_right, (140, 8, 189), -1)
                 _image = cv2.putText(_image, str(_score), (_xy_min[0]+5, _xy_min[1]-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
         return _image
-
-
-if __name__ == '__main__':
-    pass
-    # single_speed_test(image_test_path="AppResources/models/test_images/test_image_00.jpg",
-    #                   model_path="AppResources/models/yv5/yv5s_ko_uint8_384_512_edgetpu.tflite")
-    # dataset_speed_test(dataset_test_path="datasets/KAIST_DATASET_DAY/test/images",
-    #                    model_path="AppResources/models/yv5/yv5n_ko_uint8_384_512_edgetpu.tflite")
-    #python val.py --weights D:\rec_app\AppResources\models\yv5\yv5n_ko.pt --data datasets/PedestrianPGETIs179985/data.yaml --img 512

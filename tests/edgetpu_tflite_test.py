@@ -13,7 +13,7 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))[:-5]
 model_path_edgetpu = "AppResources/models/yv5/yv5s_kco_uint8_384_512_edgetpu.tflite"
 dataset_test_path = "datasets/PedestrianPGETIs179985/test/images"
 dataset_images_to_test = 1  # -1 will make test go through whole dataset
-image_path = "tests/test_images/test_image_00.jpg"
+image_path = "tests/test_images/test_image_03.jpg"
 DetectionModelEdgeTPU.TEST_TFLite = True
 
 def test_dataset_speed():
@@ -105,5 +105,5 @@ def test_single_speed():
     print("\nPreprocess time: " + str((preprocess_timer_stop - preprocess_timer_start).microseconds / 1000) + " ms")
     print("Detection time: " + str((detection_timer_stop - detection_timer_start).microseconds / 1000) + " ms")
     print("NMS and box drawing time: " + str((nms_timer_stop - nms_timer_start).microseconds / 1000) + " ms")
-    # cv2.imshow('test_image', image)
-    # cv2.waitKey(0)
+    cv2.imshow('test_image', image)
+    cv2.waitKey(0)

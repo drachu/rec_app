@@ -142,7 +142,7 @@ class MainApp(MDApp):
 
     def switch_detection_mode(self, detection, labels):
         StereoCamera.detection_mode.detection, StereoCamera.detection_mode.labels = detection, labels
-        self.detection_info_label.text = "Detekcja: wł." if StereoCamera.detection_mode.detection else "Detekcja: wył."
+        self.detection_info_label.text = "Detection: on" if StereoCamera.detection_mode.detection else "Detection: off"
         if labels:
             self.detection_info_icon.icon = 'label-multiple-outline'
         elif detection:

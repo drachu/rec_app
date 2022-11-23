@@ -9,10 +9,10 @@ LOGGER = logging.getLogger(__name__)
 
 # pytest cuda_test.py::test_dataset_speed to run one test
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))[:-5]
-model_path_pytorch = "AppResources/models/yv5/yv5s_kco.pt"
+model_path_pytorch = "AppResources/models/yv5/yv5s_ko.pt"
 dataset_test_path = "datasets/PedestrianPGETIs179985/test/images"
 dataset_images_to_test = 5  # -1 will make test go through whole dataset
-image_path = "tests/test_images/test_image_00.jpg"
+image_path = "tests/test_images/test_image_03.jpg"
 
 
 @pytest.mark.unit
@@ -49,7 +49,7 @@ def test_single_speed():
     timer_end = datetime.datetime.now()
     print("\nDetection time: " + str(round((timer_end - timer_start).microseconds / 1000, 2)) + " ms")
     print("\nLoaded model: " + model_path_pytorch + " on device: " + str(detection_model.device))
-    # cv2.imshow('test_image', test_image)
-    # cv2.waitKey(0)
+    cv2.imshow('test_image', test_image)
+    cv2.waitKey(0)
 
 
