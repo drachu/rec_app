@@ -30,7 +30,7 @@ def test_dataset_speed():
     for i, image_path in enumerate(glob.glob(dataset_test_path + "/*jpg")):
         img = cv2.imread(image_path)
         detection_timer_start = datetime.datetime.now()
-        output = detection_model.model(img)
+        detection_model.model(img)
         detection_timer_stop = datetime.datetime.now()
         results.append((detection_timer_stop - detection_timer_start).microseconds / 1000)
         print(str(results[i]) + " ms | image: " + image_path)

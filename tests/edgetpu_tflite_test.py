@@ -40,15 +40,10 @@ def test_load_model():
     os.chdir(ROOT_DIR)
     detection_model = DetectionModelEdgeTPU(model_dir_path=model_path_edgetpu)
     input = detection_model.input_details[0]['shape']
-    assert input[0] == 1
-    assert input[1] == 384
-    assert input[2] == 512
-    assert input[3] == 3
+    assert input[0] == 1 and input[1] == 384 and input[2] == 512 and input[3] == 3
     LOGGER.info("Valid input: %s", input)
     output = detection_model.output_details[0]['shape']
-    assert output[0] == 1
-    assert output[1] == 12096
-    assert output[2] == 6
+    assert output[0] == 1 and output[1] == 12096 and output[2] == 6
     LOGGER.info("Valid input: %s", output)
 
 def test_preprocess():
