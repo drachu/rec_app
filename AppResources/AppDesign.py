@@ -108,7 +108,7 @@ def generate_detection_info_card(self):
     self.detection_info_layout = MDGridLayout(cols=2, spacing=10)
     self.detection_info_icon = MDIcon(icon="square-off-outline",
                                       valign='middle')
-    self.detection_info_label = MDLabel(text="Detecion: on",
+    self.detection_info_label = MDLabel(text="Detecion: off",
                                         valign='middle')
     self.detection_info_layout.add_widget(self.detection_info_icon)
     self.detection_info_layout.add_widget(self.detection_info_label)
