@@ -8,7 +8,6 @@ import datetime
 import glob
 import sys
 
-from IPython.utils.py3compat import execfile
 
 class DetectionModelEdgeTPU:
     TEST_TFLite = False

@@ -281,9 +281,9 @@ def generate_app_design(self):
     self.bottom_panel = generate_bottom_panel(self)
 
     self.screen_manager = ScreenManager()
-    self.screen_manager.add_widget(CameraScreen(self))
     self.screen_manager.add_widget(LoadingScreen(self))
-    self.screen_manager.current = "Camera"
+    self.screen_manager.add_widget(CameraScreen(self))
+    self.screen_manager.current = "Loading"
     self.right_layout.add_widget(self.screen_manager)
     self.right_layout.add_widget(self.bottom_panel)
 
