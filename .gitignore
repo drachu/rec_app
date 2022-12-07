@@ -1,4 +1,5 @@
-AppResources/models/yolov7_model.tflite
 venv
 __pycache__
 __pycache__/
+datasets
+.idea
