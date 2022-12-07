@@ -116,7 +116,7 @@ class MainApp(MDApp):
                 save_process_rgb = threading.Thread(target=save_recording,
                                                     args=["RGB", StereoCamera.recording_module.recorded_frames_RGB, self], daemon=True)
                 save_process_ir = threading.Thread(target=save_recording,
-                                                   args=["IR", StereoCamera.recording_module.recorded_frames_RGB, self], daemon=True)
+                                                   args=["IR", StereoCamera.recording_module.recorded_frames_IR, self], daemon=True)
                 save_process_rgb.start()
                 save_process_ir.start()
 

@@ -93,7 +93,9 @@ class SynchronizationProcess(Process):
         while True:
                 cameras_reading.value = True
                 frame_IR = video_queue_IR.get()
+                frame_IR = frame_IR[30: 488, 35: 640]
                 frame_RGB = video_queue_RGB.get()
+                frame_RGB = frame_RGB[30: 488, 35: 640]
                 combined_frame, frame_IR, frame_RGB = self.preprocess_combine_frames(frame_IR, frame_RGB, camera_colors)
 
                 if detection_mode.detection and self.detection_model:

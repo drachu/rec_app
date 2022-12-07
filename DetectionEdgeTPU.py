@@ -34,11 +34,12 @@ class DetectionModelEdgeTPU:
 
     def preproces_image_for_detect(self, frame):
         _det_image = cv2.resize(frame, (512, 384), interpolation=cv2.INTER_LINEAR)
+        _orig_frame = _det_image
         _det_image = _det_image.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
         _det_image = np.ascontiguousarray(_det_image)  # contiguous
         _det_image = torch.from_numpy(_det_image).to(self.device)
         _det_image = (_det_image.float()/255)[None]
-        return _det_image, frame
+        return _det_image, _orig_frame
 
     def detection(self, frame):
         _batch, _channel, _height, _width = frame.shape
@@ -98,20 +99,3 @@ class DetectionModelEdgeTPU:
                 _image = cv2.putText(_image, str(_score), (_xy_min[0]+5, _xy_min[1]-5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1, cv2.LINE_AA)
         return _image
 
-def dataset_speed():
-    results = []
-    detection_model = DetectionModelEdgeTPU(model_dir_path="AppResources/models/yv5/yv5n_ko_uint8_384_512_edgetpu.tflite")
-    print("\n")
-    for i, image_path in enumerate(glob.glob("datasets/PedestrianPGETIs179985/test/images" + "/*jpg")):
-        img = cv2.imread(image_path)
-        img = cv2.resize(img, (512, 384), interpolation=cv2.INTER_LINEAR)
-        img_det, orig_image = detection_model.preproces_image_for_detect(img)
-        detection_timer_start = datetime.datetime.now()
-        output = detection_model.detection(img_det)
-        detection_timer_stop = datetime.datetime.now()
-        results.append((detection_timer_stop - detection_timer_start).microseconds / 1000)
-        print(str(results[i]) + " ms | image: " + image_path)
-    print("Average detection time " + str(sum(results) / len(results)) + " ms")
-
-if __name__ == '__main__':
-    dataset_speed()
