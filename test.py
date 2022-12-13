@@ -5,7 +5,7 @@ from CamerasProcessing import StereoCamera
 
 FPS_TEST_TIME = 60  # seconds
 
-def test_frame_speed():
+def frame_speed():
     stereo_camera = StereoCamera()
     frame = StereoCamera.synchronization_queue.get(timeout=15)
     counter_end = time.time() + FPS_TEST_TIME
@@ -18,3 +18,6 @@ def test_frame_speed():
     print("\nTest statistics:")
     print("\nFrames: " + str(frames))
     print("\nTime: " + str(FPS_TEST_TIME) + "s")
+
+if __name__ == "__main__":
+    frame_speed()
