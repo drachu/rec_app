@@ -14,4 +14,5 @@ if __name__ == '__main__':
         while True:
             frame = StereoCamera.synchronization_queue.get()
             cv2.imshow('frame', frame)
-            cv2.waitKey(5)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
