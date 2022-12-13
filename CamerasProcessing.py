@@ -63,11 +63,12 @@ class SynchronizationProcess(Process):
             self.detection_model = DetectionModelEdgeTPU()
             event_log.put_log("EdgeTPU model loaded")
         except:
-            pass
-        self.detection_model = DetectionModelCUDA()
-        event_log.put_log("CUDA/CPU model loaded")
-        # self.detection_model = None
-        # event_log.put_log("Could not load model")
+            try:
+                self.detection_model = DetectionModelCUDA()
+                event_log.put_log("CUDA/CPU model loaded")
+            except:
+                self.detection_model = None
+                event_log.put_log("Could not load model")
 
     def preprocess_combine_frames(self, frame_IR, frame_RGB, camera_colors):
         _combined_frame = cv2.addWeighted(frame_RGB, 0.3, frame_IR, 0.7, 0.0)
