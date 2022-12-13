@@ -129,5 +129,3 @@ def kill_processes(proc):
         p.kill()
         time.sleep(3)
 
-if __name__ == "__main__":
-    test_frame_speed()
