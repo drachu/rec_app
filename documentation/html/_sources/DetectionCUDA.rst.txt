@@ -1,0 +1,7 @@
+DetectionCUDA module
+====================
+
+.. automodule:: DetectionCUDA
+   :members:
+   :undoc-members:
+   :show-inheritance:

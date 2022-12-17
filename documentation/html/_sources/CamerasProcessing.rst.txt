@@ -1,0 +1,7 @@
+CamerasProcessing module
+========================
+
+.. automodule:: CamerasProcessing
+   :members:
+   :undoc-members:
+   :show-inheritance:

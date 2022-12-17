@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rec_app &mdash; Pedestrian detection software using multimodal imaging and machine learning 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="App module" href="App.html" />
+    <link rel="prev" title="Welcome to Pedestrian detection software using multimodal imaging and machine learning’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Pedestrian detection software using multimodal imaging and machine learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">rec_app</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="App.html">App module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AppResources.html">AppResources package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CamerasProcessing.html">CamerasProcessing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CamerasUtils.html">CamerasUtils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DetectionCUDA.html">DetectionCUDA module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DetectionEdgeTPU.html">DetectionEdgeTPU module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run.html">run module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tests.html">tests package</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Pedestrian detection software using multimodal imaging and machine learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">rec_app</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/modules.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rec-app">
+<h1>rec_app<a class="headerlink" href="#rec-app" title="Permalink to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="App.html">App module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="App.html#App.MainApp"><code class="docutils literal notranslate"><span class="pre">MainApp</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="App.html#App.MainApp.VideoThread"><code class="docutils literal notranslate"><span class="pre">MainApp.VideoThread</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="App.html#App.MainApp.VideoThread.run"><code class="docutils literal notranslate"><span class="pre">MainApp.VideoThread.run()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="App.html#App.MainApp.app_errors"><code class="docutils literal notranslate"><span class="pre">MainApp.app_errors</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="App.html#App.MainApp.build"><code class="docutils literal notranslate"><span class="pre">MainApp.build()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="App.html#App.MainApp.camera_started"><code class="docutils literal notranslate"><span class="pre">MainApp.camera_started</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="App.html#App.MainApp.check_camera_errors"><code class="docutils literal notranslate"><span class="pre">MainApp.check_camera_errors()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="App.html#App.MainApp.close_application"><code class="docutils literal notranslate"><span class="pre">MainApp.close_application()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="App.html#App.MainApp.close_error_dialog"><code class="docutils literal notranslate"><span class="pre">MainApp.close_error_dialog()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="App.html#App.MainApp.close_info_dialog"><code class="docutils literal notranslate"><span class="pre">MainApp.close_info_dialog()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="App.html#App.MainApp.error_dialog"><code class="docutils literal notranslate"><span class="pre">MainApp.error_dialog</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="App.html#App.MainApp.load_video"><code class="docutils literal notranslate"><span class="pre">MainApp.load_video()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="App.html#App.MainApp.memory_space"><code class="docutils literal notranslate"><span class="pre">MainApp.memory_space</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="App.html#App.MainApp.record_time"><code class="docutils literal notranslate"><span class="pre">MainApp.record_time</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="App.html#App.MainApp.show_error_dialog"><code class="docutils literal notranslate"><span class="pre">MainApp.show_error_dialog()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="App.html#App.MainApp.show_info_dialog"><code class="docutils literal notranslate"><span class="pre">MainApp.show_info_dialog()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="App.html#App.MainApp.show_ir_colors"><code class="docutils literal notranslate"><span class="pre">MainApp.show_ir_colors()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="App.html#App.MainApp.switch_camera_mode"><code class="docutils literal notranslate"><span class="pre">MainApp.switch_camera_mode()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="App.html#App.MainApp.switch_detection_mode"><code class="docutils literal notranslate"><span class="pre">MainApp.switch_detection_mode()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="App.html#App.MainApp.switch_recording"><code class="docutils literal notranslate"><span class="pre">MainApp.switch_recording()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="App.html#App.MainApp.switch_theme_mode"><code class="docutils literal notranslate"><span class="pre">MainApp.switch_theme_mode()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="App.html#App.MainApp.try_restart_camera"><code class="docutils literal notranslate"><span class="pre">MainApp.try_restart_camera()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="App.html#App.MainApp.update_camera_log"><code class="docutils literal notranslate"><span class="pre">MainApp.update_camera_log()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="App.html#App.MainApp.update_image"><code class="docutils literal notranslate"><span class="pre">MainApp.update_image()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="App.html#App.MainApp.update_memory_space"><code class="docutils literal notranslate"><span class="pre">MainApp.update_memory_space()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="App.html#App.MainApp.update_record"><code class="docutils literal notranslate"><span class="pre">MainApp.update_record()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="App.html#App.run_app"><code class="docutils literal notranslate"><span class="pre">run_app()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="App.html#App.save_recording"><code class="docutils literal notranslate"><span class="pre">save_recording()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="AppResources.html">AppResources package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="AppResources.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AppResources.html#module-AppResources.AppDesign">AppResources.AppDesign module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="AppResources.html#AppResources.AppDesign.CameraScreen"><code class="docutils literal notranslate"><span class="pre">CameraScreen</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="AppResources.html#AppResources.AppDesign.InformationDialogContent"><code class="docutils literal notranslate"><span class="pre">InformationDialogContent</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="AppResources.html#AppResources.AppDesign.LoadingScreen"><code class="docutils literal notranslate"><span class="pre">LoadingScreen</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="AppResources.html#AppResources.AppDesign.MyToggleButton"><code class="docutils literal notranslate"><span class="pre">MyToggleButton</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="AppResources.html#AppResources.AppDesign.create_error_dialog"><code class="docutils literal notranslate"><span class="pre">create_error_dialog()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="AppResources.html#AppResources.AppDesign.create_information_dialog"><code class="docutils literal notranslate"><span class="pre">create_information_dialog()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="AppResources.html#AppResources.AppDesign.generate_app_design"><code class="docutils literal notranslate"><span class="pre">generate_app_design()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="AppResources.html#AppResources.AppDesign.generate_bottom_panel"><code class="docutils literal notranslate"><span class="pre">generate_bottom_panel()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="AppResources.html#AppResources.AppDesign.generate_detection_info_card"><code class="docutils literal notranslate"><span class="pre">generate_detection_info_card()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="AppResources.html#AppResources.AppDesign.generate_detection_mode"><code class="docutils literal notranslate"><span class="pre">generate_detection_mode()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="AppResources.html#AppResources.AppDesign.generate_information_layout"><code class="docutils literal notranslate"><span class="pre">generate_information_layout()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="AppResources.html#AppResources.AppDesign.generate_left_card"><code class="docutils literal notranslate"><span class="pre">generate_left_card()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="AppResources.html#AppResources.AppDesign.generate_log_card"><code class="docutils literal notranslate"><span class="pre">generate_log_card()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="AppResources.html#AppResources.AppDesign.generate_memory_info_card"><code class="docutils literal notranslate"><span class="pre">generate_memory_info_card()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="AppResources.html#AppResources.AppDesign.generate_record_card"><code class="docutils literal notranslate"><span class="pre">generate_record_card()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="AppResources.html#AppResources.AppDesign.log_app_event"><code class="docutils literal notranslate"><span class="pre">log_app_event()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="AppResources.html#AppResources.AppDesign.log_camera_event"><code class="docutils literal notranslate"><span class="pre">log_camera_event()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="AppResources.html#AppResources.AppDesign.update_widgets_theme"><code class="docutils literal notranslate"><span class="pre">update_widgets_theme()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="AppResources.html#module-AppResources">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="CamerasProcessing.html">CamerasProcessing module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="CamerasProcessing.html#CamerasProcessing.CameraProcess"><code class="docutils literal notranslate"><span class="pre">CameraProcess</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="CamerasProcessing.html#CamerasProcessing.CameraProcess.resize_and_map"><code class="docutils literal notranslate"><span class="pre">CameraProcess.resize_and_map()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="CamerasProcessing.html#CamerasProcessing.CameraProcess.start_camera"><code class="docutils literal notranslate"><span class="pre">CameraProcess.start_camera()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="CamerasProcessing.html#CamerasProcessing.StereoCamera"><code class="docutils literal notranslate"><span class="pre">StereoCamera</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="CamerasProcessing.html#CamerasProcessing.StereoCamera.TEST_MODE"><code class="docutils literal notranslate"><span class="pre">StereoCamera.TEST_MODE</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="CamerasProcessing.html#CamerasProcessing.StereoCamera.camera_colors_IR"><code class="docutils literal notranslate"><span class="pre">StereoCamera.camera_colors_IR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="CamerasProcessing.html#CamerasProcessing.StereoCamera.camera_switch"><code class="docutils literal notranslate"><span class="pre">StereoCamera.camera_switch</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="CamerasProcessing.html#CamerasProcessing.StereoCamera.cameras_reading"><code class="docutils literal notranslate"><span class="pre">StereoCamera.cameras_reading</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="CamerasProcessing.html#CamerasProcessing.StereoCamera.detection_mode"><code class="docutils literal notranslate"><span class="pre">StereoCamera.detection_mode</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="CamerasProcessing.html#CamerasProcessing.StereoCamera.display_mode"><code class="docutils literal notranslate"><span class="pre">StereoCamera.display_mode</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="CamerasProcessing.html#CamerasProcessing.StereoCamera.error_lock"><code class="docutils literal notranslate"><span class="pre">StereoCamera.error_lock</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="CamerasProcessing.html#CamerasProcessing.StereoCamera.event_log"><code class="docutils literal notranslate"><span class="pre">StereoCamera.event_log</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="CamerasProcessing.html#CamerasProcessing.StereoCamera.get_calibration_mapping"><code class="docutils literal notranslate"><span class="pre">StereoCamera.get_calibration_mapping()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="CamerasProcessing.html#CamerasProcessing.StereoCamera.recording_module"><code class="docutils literal notranslate"><span class="pre">StereoCamera.recording_module</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="CamerasProcessing.html#CamerasProcessing.StereoCamera.start"><code class="docutils literal notranslate"><span class="pre">StereoCamera.start()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="CamerasProcessing.html#CamerasProcessing.StereoCamera.synchronization_lock"><code class="docutils literal notranslate"><span class="pre">StereoCamera.synchronization_lock</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="CamerasProcessing.html#CamerasProcessing.StereoCamera.synchronization_queue"><code class="docutils literal notranslate"><span class="pre">StereoCamera.synchronization_queue</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="CamerasProcessing.html#CamerasProcessing.StereoCamera.video_queue_IR"><code class="docutils literal notranslate"><span class="pre">StereoCamera.video_queue_IR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="CamerasProcessing.html#CamerasProcessing.StereoCamera.video_queue_RGB"><code class="docutils literal notranslate"><span class="pre">StereoCamera.video_queue_RGB</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="CamerasProcessing.html#CamerasProcessing.SynchronizationProcess"><code class="docutils literal notranslate"><span class="pre">SynchronizationProcess</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="CamerasProcessing.html#CamerasProcessing.SynchronizationProcess.load_detection_model"><code class="docutils literal notranslate"><span class="pre">SynchronizationProcess.load_detection_model()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="CamerasProcessing.html#CamerasProcessing.SynchronizationProcess.preprocess_combine_frames"><code class="docutils literal notranslate"><span class="pre">SynchronizationProcess.preprocess_combine_frames()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="CamerasProcessing.html#CamerasProcessing.SynchronizationProcess.synchronization"><code class="docutils literal notranslate"><span class="pre">SynchronizationProcess.synchronization()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="CamerasProcessing.html#CamerasProcessing.put_frame"><code class="docutils literal notranslate"><span class="pre">put_frame()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="CamerasProcessing.html#CamerasProcessing.raise_error"><code class="docutils literal notranslate"><span class="pre">raise_error()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="CamerasUtils.html">CamerasUtils module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="CamerasUtils.html#CamerasUtils.CalibrationMapping"><code class="docutils literal notranslate"><span class="pre">CalibrationMapping</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="CamerasUtils.html#CamerasUtils.DetectionMode"><code class="docutils literal notranslate"><span class="pre">DetectionMode</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="CamerasUtils.html#CamerasUtils.DetectionMode.detection"><code class="docutils literal notranslate"><span class="pre">DetectionMode.detection</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="CamerasUtils.html#CamerasUtils.DetectionMode.labels"><code class="docutils literal notranslate"><span class="pre">DetectionMode.labels</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="CamerasUtils.html#CamerasUtils.DisplayMode"><code class="docutils literal notranslate"><span class="pre">DisplayMode</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="CamerasUtils.html#CamerasUtils.DisplayMode.IR"><code class="docutils literal notranslate"><span class="pre">DisplayMode.IR</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="CamerasUtils.html#CamerasUtils.DisplayMode.RGB"><code class="docutils literal notranslate"><span class="pre">DisplayMode.RGB</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="CamerasUtils.html#CamerasUtils.EventLog"><code class="docutils literal notranslate"><span class="pre">EventLog</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="CamerasUtils.html#CamerasUtils.EventLog.put_error"><code class="docutils literal notranslate"><span class="pre">EventLog.put_error()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="CamerasUtils.html#CamerasUtils.EventLog.put_log"><code class="docutils literal notranslate"><span class="pre">EventLog.put_log()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="CamerasUtils.html#CamerasUtils.RecordingModule"><code class="docutils literal notranslate"><span class="pre">RecordingModule</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="CamerasUtils.html#CamerasUtils.RecordingModule.recording"><code class="docutils literal notranslate"><span class="pre">RecordingModule.recording</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="DetectionCUDA.html">DetectionCUDA module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="DetectionCUDA.html#DetectionCUDA.DetectionModelCUDA"><code class="docutils literal notranslate"><span class="pre">DetectionModelCUDA</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="DetectionCUDA.html#DetectionCUDA.DetectionModelCUDA.draw_detections"><code class="docutils literal notranslate"><span class="pre">DetectionModelCUDA.draw_detections()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="DetectionEdgeTPU.html">DetectionEdgeTPU module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="DetectionEdgeTPU.html#DetectionEdgeTPU.DetectionModelEdgeTPU"><code class="docutils literal notranslate"><span class="pre">DetectionModelEdgeTPU</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="DetectionEdgeTPU.html#DetectionEdgeTPU.DetectionModelEdgeTPU.TEST_TFLite"><code class="docutils literal notranslate"><span class="pre">DetectionModelEdgeTPU.TEST_TFLite</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="DetectionEdgeTPU.html#DetectionEdgeTPU.DetectionModelEdgeTPU.detection"><code class="docutils literal notranslate"><span class="pre">DetectionModelEdgeTPU.detection()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="DetectionEdgeTPU.html#DetectionEdgeTPU.DetectionModelEdgeTPU.draw_detections"><code class="docutils literal notranslate"><span class="pre">DetectionModelEdgeTPU.draw_detections()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="DetectionEdgeTPU.html#DetectionEdgeTPU.DetectionModelEdgeTPU.initliazlie_interpreter"><code class="docutils literal notranslate"><span class="pre">DetectionModelEdgeTPU.initliazlie_interpreter()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="DetectionEdgeTPU.html#DetectionEdgeTPU.DetectionModelEdgeTPU.nms"><code class="docutils literal notranslate"><span class="pre">DetectionModelEdgeTPU.nms()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="DetectionEdgeTPU.html#DetectionEdgeTPU.DetectionModelEdgeTPU.preproces_image_for_detect"><code class="docutils literal notranslate"><span class="pre">DetectionModelEdgeTPU.preproces_image_for_detect()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="DetectionEdgeTPU.html#DetectionEdgeTPU.DetectionModelEdgeTPU.xywh2xyxy"><code class="docutils literal notranslate"><span class="pre">DetectionModelEdgeTPU.xywh2xyxy()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="run.html">run module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">tests package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tests.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tests.html#module-tests.camera_processing_test">tests.camera_processing_test module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#tests.camera_processing_test.kill_processes"><code class="docutils literal notranslate"><span class="pre">kill_processes()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#tests.camera_processing_test.test_any_camera_connection"><code class="docutils literal notranslate"><span class="pre">test_any_camera_connection()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#tests.camera_processing_test.test_calibration_mapping"><code class="docutils literal notranslate"><span class="pre">test_calibration_mapping()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#tests.camera_processing_test.test_frame_speed"><code class="docutils literal notranslate"><span class="pre">test_frame_speed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#tests.camera_processing_test.test_ir_camera_connection"><code class="docutils literal notranslate"><span class="pre">test_ir_camera_connection()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#tests.camera_processing_test.test_rgb_camera_connection"><code class="docutils literal notranslate"><span class="pre">test_rgb_camera_connection()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#tests.camera_processing_test.test_whole_camera_connection"><code class="docutils literal notranslate"><span class="pre">test_whole_camera_connection()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tests.html#module-tests.cuda_test">tests.cuda_test module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#tests.cuda_test.test_dataset_speed"><code class="docutils literal notranslate"><span class="pre">test_dataset_speed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#tests.cuda_test.test_load_model"><code class="docutils literal notranslate"><span class="pre">test_load_model()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#tests.cuda_test.test_single_speed"><code class="docutils literal notranslate"><span class="pre">test_single_speed()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tests.html#module-tests.edgetpu_tflite_test">tests.edgetpu_tflite_test module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#tests.edgetpu_tflite_test.test_dataset_speed"><code class="docutils literal notranslate"><span class="pre">test_dataset_speed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#tests.edgetpu_tflite_test.test_load_model"><code class="docutils literal notranslate"><span class="pre">test_load_model()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#tests.edgetpu_tflite_test.test_nms"><code class="docutils literal notranslate"><span class="pre">test_nms()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#tests.edgetpu_tflite_test.test_preprocess"><code class="docutils literal notranslate"><span class="pre">test_preprocess()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tests.html#tests.edgetpu_tflite_test.test_single_speed"><code class="docutils literal notranslate"><span class="pre">test_single_speed()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tests.html#module-tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Pedestrian detection software using multimodal imaging and machine learning’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="App.html" class="btn btn-neutral float-right" title="App module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Adam Dradrach 179985.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

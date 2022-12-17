@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CamerasProcessing &mdash; Pedestrian detection software using multimodal imaging and machine learning 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Pedestrian detection software using multimodal imaging and machine learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">rec_app</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Pedestrian detection software using multimodal imaging and machine learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">CamerasProcessing</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for CamerasProcessing</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">multiprocessing</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Queue</span><span class="p">,</span> <span class="n">Value</span><span class="p">,</span> <span class="n">Process</span><span class="p">,</span> <span class="n">Manager</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="n">c_bool</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">from</span> <span class="nn">DetectionEdgeTPU</span> <span class="kn">import</span> <span class="n">DetectionModelEdgeTPU</span>
+<span class="kn">from</span> <span class="nn">DetectionCUDA</span> <span class="kn">import</span> <span class="n">DetectionModelCUDA</span>
+<span class="kn">from</span> <span class="nn">CamerasUtils</span> <span class="kn">import</span> <span class="n">DisplayMode</span><span class="p">,</span> <span class="n">DetectionMode</span><span class="p">,</span> <span class="n">CalibrationMapping</span><span class="p">,</span> <span class="n">EventLog</span><span class="p">,</span> <span class="n">RecordingModule</span>
+
+
+<div class="viewcode-block" id="StereoCamera"><a class="viewcode-back" href="../CamerasProcessing.html#CamerasProcessing.StereoCamera">[docs]</a><span class="k">class</span> <span class="nc">StereoCamera</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Main Class that represents whole stereo camera&#39;s module.&quot;&quot;&quot;</span>
+
+    <span class="n">TEST_MODE</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="sd">&quot;&quot;&quot;Depending on this field exceptions are raised and not showed on interface&quot;&quot;&quot;</span>
+    <span class="n">display_mode</span> <span class="o">=</span> <span class="n">DisplayMode</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">     Cameras display mode instance with multiprocessing variables.</span>
+<span class="sd">     &quot;&quot;&quot;</span>
+    <span class="n">detection_mode</span> <span class="o">=</span> <span class="n">DetectionMode</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">     Cameras detection mode instance with multiprocessing variables.</span>
+<span class="sd">     &quot;&quot;&quot;</span>
+    <span class="n">event_log</span> <span class="o">=</span> <span class="n">EventLog</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">     Cameras event log instance containing error and log Proxy Lists.</span>
+<span class="sd">     &quot;&quot;&quot;</span>
+    <span class="n">recording_module</span> <span class="o">=</span> <span class="n">RecordingModule</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">     Recording module instance with RGB and IR frames lists.</span>
+<span class="sd">     &quot;&quot;&quot;</span>
+    <span class="n">camera_switch</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="n">c_bool</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">     Camera switch for cameras synchronization. Is changed whenever other process is using put_frame function.</span>
+<span class="sd">     &quot;&quot;&quot;</span>
+    <span class="n">cameras_reading</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="n">c_bool</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">     Logic value telling if cameras starting their work.</span>
+<span class="sd">     &quot;&quot;&quot;</span>
+    <span class="n">camera_colors_IR</span> <span class="o">=</span> <span class="n">Value</span><span class="p">(</span><span class="n">c_bool</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">     Logic value - when set on true JET mapped IR frames are displayed.</span>
+<span class="sd">     &quot;&quot;&quot;</span>
+    <span class="n">synchronization_queue</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">     Queue with processed and combined frames ready to deploy to application.</span>
+<span class="sd">     &quot;&quot;&quot;</span>
+    <span class="n">video_queue_IR</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">     Queue with IR frames got from IR camera.</span>
+<span class="sd">     &quot;&quot;&quot;</span>
+    <span class="n">video_queue_RGB</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">     Queue with RGB frames got from RGB camera.</span>
+<span class="sd">     &quot;&quot;&quot;</span>
+    <span class="n">synchronization_lock</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">     Synchronization multiprocessing log used for cameras synchronization in put_frame function.</span>
+<span class="sd">     &quot;&quot;&quot;</span>
+    <span class="n">error_lock</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">     Lock that prevents using error function by more than one process.</span>
+<span class="sd">     &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="StereoCamera.get_calibration_mapping"><a class="viewcode-back" href="../CamerasProcessing.html#CamerasProcessing.StereoCamera.get_calibration_mapping">[docs]</a>    <span class="k">def</span> <span class="nf">get_calibration_mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">event_log</span><span class="o">=</span><span class="n">event_log</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reading from file calibration mapping variables for IR and RGB cameras.</span>
+<span class="sd">            :param path: Path to file with calibration mapping.</span>
+<span class="sd">            :param event_log: Event log to record eventual errors or logs.</span>
+<span class="sd">            :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">calibration_file</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FileStorage</span><span class="p">()</span>
+            <span class="n">calibration_file</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">FileStorage_READ</span><span class="p">)</span>
+            <span class="n">map_RGB</span> <span class="o">=</span> <span class="n">CalibrationMapping</span><span class="p">(</span><span class="n">calibration_file</span><span class="o">.</span><span class="n">getNode</span><span class="p">(</span><span class="s1">&#39;stereoMapRGB_x&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mat</span><span class="p">(),</span>
+                                         <span class="n">calibration_file</span><span class="o">.</span><span class="n">getNode</span><span class="p">(</span><span class="s1">&#39;stereoMapRGB_y&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mat</span><span class="p">())</span>
+            <span class="n">map_IR</span> <span class="o">=</span> <span class="n">CalibrationMapping</span><span class="p">(</span><span class="n">calibration_file</span><span class="o">.</span><span class="n">getNode</span><span class="p">(</span><span class="s1">&#39;stereoMapThermal_x&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mat</span><span class="p">(),</span>
+                                        <span class="n">calibration_file</span><span class="o">.</span><span class="n">getNode</span><span class="p">(</span><span class="s1">&#39;stereoMapThermal_y&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">mat</span><span class="p">())</span>
+            <span class="k">return</span> <span class="n">map_RGB</span><span class="p">,</span> <span class="n">map_IR</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">raise_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="n">event_log</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Could not get calibration mapping!&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="StereoCamera.start"><a class="viewcode-back" href="../CamerasProcessing.html#CamerasProcessing.StereoCamera.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">id_RGB</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Windows&quot;</span> <span class="k">else</span> <span class="mi">2</span><span class="p">,</span> <span class="n">id_IR</span> <span class="o">=</span> <span class="mi">2</span> <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Windows&quot;</span> <span class="k">else</span> <span class="mi">1</span><span class="p">,</span> <span class="n">event_log</span><span class="o">=</span><span class="n">event_log</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that is starting RGB, IR and synchronization processes.</span>
+<span class="sd">            :param id_RGB: Identification for RGB camera depending on system.</span>
+<span class="sd">            :param id_IR: Identification for IR camera depending on system.</span>
+<span class="sd">            :param event_log: Event log to record eventual errors or logs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stereo_map_RGB</span><span class="p">,</span> <span class="n">stereo_map_IR</span> <span class="o">=</span> <span class="n">StereoCamera</span><span class="o">.</span><span class="n">get_calibration_mapping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;AppResources/calibration/data/stereoMap.xml&#39;</span><span class="p">,</span> <span class="n">event_log</span><span class="o">=</span><span class="n">event_log</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">synchronization_process</span> <span class="o">=</span> <span class="n">SynchronizationProcess</span><span class="p">()</span>
+            <span class="n">camera_process_RGB</span> <span class="o">=</span> <span class="n">CameraProcess</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">,</span> <span class="n">id_RGB</span><span class="p">,</span> <span class="n">stereo_map_RGB</span><span class="p">)</span>
+            <span class="n">camera_process_IR</span> <span class="o">=</span> <span class="n">CameraProcess</span><span class="p">(</span><span class="s2">&quot;IR&quot;</span><span class="p">,</span> <span class="n">id_IR</span><span class="p">,</span> <span class="n">stereo_map_IR</span><span class="p">)</span>
+            <span class="n">synchronization_process</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="n">camera_process_RGB</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="n">camera_process_IR</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">raise_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="n">event_log</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Could not start processes!&quot;</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">cameras_data_manager</span> <span class="o">=</span> <span class="n">Manager</span><span class="p">()</span>
+        <span class="n">StereoCamera</span><span class="o">.</span><span class="n">event_log</span><span class="o">.</span><span class="n">camera_log</span> <span class="o">=</span> <span class="n">cameras_data_manager</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+        <span class="n">StereoCamera</span><span class="o">.</span><span class="n">event_log</span><span class="o">.</span><span class="n">camera_errors</span> <span class="o">=</span> <span class="n">cameras_data_manager</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+        <span class="n">StereoCamera</span><span class="o">.</span><span class="n">recording_module</span><span class="o">.</span><span class="n">recorded_frames_RGB</span> <span class="o">=</span> <span class="n">cameras_data_manager</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+        <span class="n">StereoCamera</span><span class="o">.</span><span class="n">recording_module</span><span class="o">.</span><span class="n">recorded_frames_IR</span> <span class="o">=</span> <span class="n">cameras_data_manager</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">StereoCamera</span><span class="o">.</span><span class="n">TEST_MODE</span><span class="p">:</span>
+            <span class="n">StereoCamera</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_log</span><span class="o">=</span><span class="n">StereoCamera</span><span class="o">.</span><span class="n">event_log</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SynchronizationProcess"><a class="viewcode-back" href="../CamerasProcessing.html#CamerasProcessing.SynchronizationProcess">[docs]</a><span class="k">class</span> <span class="nc">SynchronizationProcess</span><span class="p">(</span><span class="n">Process</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Synchronization process class that is responsible for combining IR and RGB frame, detection and passing frames to application.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SynchronizationProcess.load_detection_model"><a class="viewcode-back" href="../CamerasProcessing.html#CamerasProcessing.SynchronizationProcess.load_detection_model">[docs]</a>    <span class="k">def</span> <span class="nf">load_detection_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_log</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Loading detection model (CUDA or EDGE TPU) file depending on device&#39;s system and capabilities.</span>
+<span class="sd">            :param event_log: Event log to record eventual errors or logs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">detection_model</span> <span class="o">=</span> <span class="n">DetectionModelEdgeTPU</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;EdgeTPU model loaded&quot;</span><span class="p">)</span>
+            <span class="n">event_log</span><span class="o">.</span><span class="n">put_log</span><span class="p">(</span><span class="s2">&quot;EdgeTPU model loaded&quot;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">detection_model</span> <span class="o">=</span> <span class="n">DetectionModelCUDA</span><span class="p">()</span>
+                <span class="n">event_log</span><span class="o">.</span><span class="n">put_log</span><span class="p">(</span><span class="s2">&quot;CUDA/CPU model loaded&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CUDA/CPU model loaded&quot;</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">detection_model</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">event_log</span><span class="o">.</span><span class="n">put_log</span><span class="p">(</span><span class="s2">&quot;Could not load model&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Could not load model&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SynchronizationProcess.preprocess_combine_frames"><a class="viewcode-back" href="../CamerasProcessing.html#CamerasProcessing.SynchronizationProcess.preprocess_combine_frames">[docs]</a>    <span class="k">def</span> <span class="nf">preprocess_combine_frames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_IR</span><span class="p">,</span> <span class="n">frame_RGB</span><span class="p">,</span> <span class="n">camera_colors</span><span class="p">,</span> <span class="n">event_log</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Combining RGB and IR frames and applying JET map color mapping.</span>
+<span class="sd">            :param frame_IR: Frame from IR camera.</span>
+<span class="sd">            :param frame_RGB: Frame from RGB camera.</span>
+<span class="sd">            :param camera_colors: Passed value that is telling if JET map should be used.</span>
+<span class="sd">            :param event_log: Event log to record eventual errors or logs.</span>
+<span class="sd">            :return: Combined frame from IR and RGB images.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_combined_frame</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">addWeighted</span><span class="p">(</span><span class="n">frame_RGB</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">frame_IR</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+            <span class="n">_combined_frame</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">_combined_frame</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_GRAY2BGR</span><span class="p">)</span>
+            <span class="n">_frame_IR</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">frame_IR</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_GRAY2BGR</span><span class="p">)</span>
+            <span class="n">_frame_RGB</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">frame_RGB</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_GRAY2BGR</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">camera_colors</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+                <span class="n">_frame_IR</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">applyColorMap</span><span class="p">(</span><span class="n">_frame_IR</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLORMAP_JET</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">_combined_frame</span><span class="p">,</span> <span class="n">_frame_IR</span><span class="p">,</span> <span class="n">_frame_RGB</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">raise_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="n">event_log</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Could not preprocess frames!&quot;</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">detection_model</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">Process</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">synchronization</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">StereoCamera</span><span class="o">.</span><span class="n">detection_mode</span><span class="p">,</span>
+        <span class="n">StereoCamera</span><span class="o">.</span><span class="n">display_mode</span><span class="p">,</span> <span class="n">StereoCamera</span><span class="o">.</span><span class="n">recording_module</span><span class="p">,</span>
+        <span class="n">StereoCamera</span><span class="o">.</span><span class="n">cameras_reading</span><span class="p">,</span> <span class="n">StereoCamera</span><span class="o">.</span><span class="n">synchronization_queue</span><span class="p">,</span> <span class="n">StereoCamera</span><span class="o">.</span><span class="n">video_queue_IR</span><span class="p">,</span>
+        <span class="n">StereoCamera</span><span class="o">.</span><span class="n">video_queue_RGB</span><span class="p">,</span> <span class="n">StereoCamera</span><span class="o">.</span><span class="n">event_log</span><span class="p">,</span> <span class="n">StereoCamera</span><span class="o">.</span><span class="n">camera_colors_IR</span><span class="p">),</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SynchronizationProcess.synchronization"><a class="viewcode-back" href="../CamerasProcessing.html#CamerasProcessing.SynchronizationProcess.synchronization">[docs]</a>    <span class="k">def</span> <span class="nf">synchronization</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">detection_mode</span><span class="p">,</span> <span class="n">display_mode</span><span class="p">,</span> <span class="n">recording_module</span><span class="p">,</span>
+                        <span class="n">cameras_reading</span><span class="p">,</span> <span class="n">synchronization_queue</span><span class="p">,</span> <span class="n">video_queue_IR</span><span class="p">,</span> <span class="n">video_queue_RGB</span><span class="p">,</span>
+                        <span class="n">event_log</span><span class="p">,</span> <span class="n">camera_colors</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Main synchronization process looped method that is reading frames from RGB and IR frames,</span>
+<span class="sd">        processing detection and saving frames to recording module lists.</span>
+<span class="sd">            :param detection_mode: Detection mode module main process reference for multiprocessing shared memory.</span>
+<span class="sd">            :param display_mode: Display mode module main process reference for multiprocessing shared memory.</span>
+<span class="sd">            :param recording_module: Recording mode module main process reference for multiprocessing shared memory.</span>
+<span class="sd">            :param cameras_reading: Cameras reading bool main process reference for multiprocessing shared memory.</span>
+<span class="sd">            :param synchronization_queue: Synchronization queue reference for multiprocessing shared memory.</span>
+<span class="sd">            :param video_queue_IR: IR camera queue reference for multiprocessing shared memory.</span>
+<span class="sd">            :param video_queue_RGB: RGB camera queue reference for multiprocessing shared memory.</span>
+<span class="sd">            :param event_log: Event log to record eventual errors or logs.</span>
+<span class="sd">            :param camera_colors: Passed value that is telling if JET map should be used.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">event_log</span><span class="o">.</span><span class="n">put_log</span><span class="p">(</span><span class="s2">&quot;Sync process started&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_detection_model</span><span class="p">(</span><span class="n">event_log</span><span class="p">)</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">cameras_reading</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">frame_IR</span> <span class="o">=</span> <span class="n">video_queue_IR</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+                <span class="n">frame_IR</span> <span class="o">=</span> <span class="n">frame_IR</span><span class="p">[</span><span class="mi">30</span><span class="p">:</span> <span class="mi">488</span><span class="p">,</span> <span class="mi">35</span><span class="p">:</span> <span class="mi">640</span><span class="p">]</span>
+                <span class="n">frame_RGB</span> <span class="o">=</span> <span class="n">video_queue_RGB</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+                <span class="n">frame_RGB</span> <span class="o">=</span> <span class="n">frame_RGB</span><span class="p">[</span><span class="mi">30</span><span class="p">:</span> <span class="mi">488</span><span class="p">,</span> <span class="mi">35</span><span class="p">:</span> <span class="mi">640</span><span class="p">]</span>
+                <span class="n">combined_frame</span><span class="p">,</span> <span class="n">frame_IR</span><span class="p">,</span> <span class="n">frame_RGB</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess_combine_frames</span><span class="p">(</span><span class="n">frame_IR</span><span class="p">,</span> <span class="n">frame_RGB</span><span class="p">,</span> <span class="n">camera_colors</span><span class="p">,</span> <span class="n">event_log</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">detection_mode</span><span class="o">.</span><span class="n">detection</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">detection_model</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">detection_model</span><span class="p">,</span> <span class="n">DetectionModelEdgeTPU</span><span class="p">):</span>
+                        <span class="n">image_det</span><span class="p">,</span> <span class="n">image_orig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detection_model</span><span class="o">.</span><span class="n">preproces_image_for_detect</span><span class="p">(</span><span class="n">combined_frame</span><span class="p">)</span>
+                        <span class="n">output_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detection_model</span><span class="o">.</span><span class="n">detection</span><span class="p">(</span><span class="n">image_det</span><span class="p">)</span>
+                        <span class="n">output_nms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detection_model</span><span class="o">.</span><span class="n">nms</span><span class="p">(</span><span class="n">output_data</span><span class="p">)</span>
+                        <span class="n">image_orig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detection_model</span><span class="o">.</span><span class="n">draw_detections</span><span class="p">(</span><span class="n">output_nms</span><span class="p">,</span> <span class="n">image_orig</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">detection_mode</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span>
+                        <span class="n">combined_frame</span> <span class="o">=</span> <span class="n">image_orig</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detection_model</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">combined_frame</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">results</span><span class="p">:</span>
+                            <span class="n">combined_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">detection_model</span><span class="o">.</span><span class="n">draw_detections</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">combined_frame</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">detection_mode</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span>
+                <span class="c1"># try:</span>
+                <span class="k">if</span> <span class="n">display_mode</span><span class="o">.</span><span class="n">IR</span> <span class="ow">and</span> <span class="n">display_mode</span><span class="o">.</span><span class="n">RGB</span><span class="p">:</span>
+                    <span class="n">synchronization_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">combined_frame</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">display_mode</span><span class="o">.</span><span class="n">IR</span><span class="p">:</span>
+                    <span class="n">synchronization_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">frame_IR</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">display_mode</span><span class="o">.</span><span class="n">RGB</span><span class="p">:</span>
+                    <span class="n">synchronization_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">frame_RGB</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">recording_module</span><span class="o">.</span><span class="n">recording</span><span class="p">:</span>
+                    <span class="n">frame_record_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">_%H-%M-%S-</span><span class="si">%f</span><span class="s1">&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+                    <span class="n">recording_module</span><span class="o">.</span><span class="n">recorded_frames_RGB</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">frame_RGB</span><span class="p">,</span> <span class="n">frame_record_time</span><span class="p">])</span>
+                    <span class="n">recording_module</span><span class="o">.</span><span class="n">recorded_frames_IR</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">frame_IR</span><span class="p">,</span> <span class="n">frame_record_time</span><span class="p">])</span></div></div>
+
+
+<div class="viewcode-block" id="CameraProcess"><a class="viewcode-back" href="../CamerasProcessing.html#CamerasProcessing.CameraProcess">[docs]</a><span class="k">class</span> <span class="nc">CameraProcess</span><span class="p">(</span><span class="n">Process</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dynamic class for IR and RGB cameras processes that is responsible for cameras serving.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">cam_id</span><span class="p">,</span> <span class="n">stereo_map</span><span class="p">,</span> <span class="n">TEST</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="n">Process</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">start_camera</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">StereoCamera</span><span class="o">.</span><span class="n">camera_switch</span><span class="p">,</span>
+        <span class="n">StereoCamera</span><span class="o">.</span><span class="n">video_queue_IR</span><span class="p">,</span> <span class="n">StereoCamera</span><span class="o">.</span><span class="n">video_queue_RGB</span><span class="p">,</span> <span class="n">StereoCamera</span><span class="o">.</span><span class="n">event_log</span><span class="p">),</span> <span class="n">daemon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cam_id</span> <span class="o">=</span> <span class="n">cam_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stereo_map</span> <span class="o">=</span> <span class="n">stereo_map</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TEST</span> <span class="o">=</span> <span class="n">TEST</span>
+
+<div class="viewcode-block" id="CameraProcess.resize_and_map"><a class="viewcode-back" href="../CamerasProcessing.html#CamerasProcessing.CameraProcess.resize_and_map">[docs]</a>    <span class="k">def</span> <span class="nf">resize_and_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_to_calibrate</span><span class="p">,</span> <span class="n">event_log</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Preprocessing frames - calibrating and resizing for proper values that system is normalized to.</span>
+<span class="sd">            :param frame_to_calibrate: Passed frame to preprocess.</span>
+<span class="sd">            :param event_log: Event log to record eventual errors or logs.</span>
+<span class="sd">            :return: Calibrated frame.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># przeskalowanie obu klatek do jednego rozmiaru</span>
+            <span class="n">resize</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">frame_to_calibrate</span><span class="p">,</span> <span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">488</span><span class="p">),</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">INTER_LANCZOS4</span><span class="p">)</span>
+            <span class="c1"># wprowadzenie mapowania</span>
+            <span class="n">frame_mapped</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">remap</span><span class="p">(</span><span class="n">resize</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stereo_map</span><span class="o">.</span><span class="n">map_x</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">stereo_map</span><span class="o">.</span><span class="n">map_y</span><span class="p">,</span>
+                                     <span class="n">cv2</span><span class="o">.</span><span class="n">INTER_LANCZOS4</span><span class="p">,</span>
+                                     <span class="n">cv2</span><span class="o">.</span><span class="n">BORDER_CONSTANT</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="c1"># ręczne zmiany tylko dla klatek kamery RGB</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;RGB&quot;</span><span class="p">:</span>
+                <span class="c1">#dodatkowa translacja oraz repozycja</span>
+                <span class="n">frame_mapped</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">warpAffine</span><span class="p">(</span><span class="n">frame_mapped</span><span class="p">,</span>
+                                              <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">45</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">40</span><span class="p">]]),</span>
+                                              <span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">488</span><span class="p">))[</span><span class="mi">0</span><span class="p">:</span><span class="mi">488</span> <span class="o">-</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">640</span> <span class="o">-</span> <span class="mi">80</span><span class="p">]</span>
+                <span class="c1"># powtórne przeskalowanie do porządanej rozdzielczości</span>
+                <span class="n">frame_mapped</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">frame_mapped</span><span class="p">,</span> <span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">488</span><span class="p">),</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">INTER_AREA</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">frame_mapped</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">raise_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="n">event_log</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Could not resize and map frame!&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CameraProcess.start_camera"><a class="viewcode-back" href="../CamerasProcessing.html#CamerasProcessing.CameraProcess.start_camera">[docs]</a>    <span class="k">def</span> <span class="nf">start_camera</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">camera_switch</span><span class="p">,</span> <span class="n">video_queue_IR</span><span class="p">,</span> <span class="n">video_queue_RGB</span><span class="p">,</span> <span class="n">event_log</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Starting camera connection using OpenCV functions. Starting loop if cameras are detected and connection is established.</span>
+<span class="sd">            :param camera_switch: Camera synchronization reference for shared multiprocessing memory.</span>
+<span class="sd">            :param video_queue_IR: IR camera queue reference for multiprocessing shared memory.</span>
+<span class="sd">            :param video_queue_RGB: RGB camera queue reference for multiprocessing shared memory.</span>
+<span class="sd">            :param event_log: Event log to record eventual errors or logs</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;RGB&quot;</span> <span class="ow">and</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Windows&quot;</span><span class="p">:</span>
+            <span class="n">cam</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cam_id</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">CAP_DSHOW</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cam</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cam_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cam</span><span class="o">.</span><span class="n">isOpened</span><span class="p">():</span>  <span class="c1"># try to get the first frame</span>
+            <span class="n">event_log</span><span class="o">.</span><span class="n">put_log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot; camera found!&quot;</span><span class="p">)</span>
+            <span class="n">rval</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">cam</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">event_log</span><span class="o">.</span><span class="n">put_log</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot; camera not found!&quot;</span><span class="p">)</span>
+            <span class="n">raise_error</span><span class="p">(</span><span class="n">error</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">event_log</span><span class="o">=</span><span class="n">event_log</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Cameras not found!&quot;</span><span class="p">)</span>
+            <span class="n">rval</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">while</span> <span class="n">rval</span><span class="p">:</span>
+            <span class="n">rval</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">cam</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;RGB&quot;</span> <span class="ow">and</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Windows&quot;</span><span class="p">:</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="mf">8.7</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;IR&quot;</span> <span class="ow">and</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Linux&quot;</span><span class="p">:</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="mf">1000.0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">TEST</span><span class="p">:</span>
+                <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">resize_and_map</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">event_log</span><span class="p">)</span>
+            <span class="n">frame</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;IR&quot;</span> <span class="ow">and</span> <span class="n">camera_switch</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+                <span class="n">frame</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">bitwise_not</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+                <span class="n">put_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">camera_switch</span><span class="p">,</span> <span class="n">video_queue_IR</span><span class="p">,</span> <span class="n">video_queue_RGB</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;RGB&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">camera_switch</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
+                <span class="n">put_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">camera_switch</span><span class="p">,</span> <span class="n">video_queue_IR</span><span class="p">,</span> <span class="n">video_queue_RGB</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="put_frame"><a class="viewcode-back" href="../CamerasProcessing.html#CamerasProcessing.put_frame">[docs]</a><span class="k">def</span> <span class="nf">put_frame</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">camera_switch</span><span class="p">,</span> <span class="n">video_queue_IR</span><span class="p">,</span> <span class="n">video_queue_RGB</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Static synchronized function that is passing RGB or IR frame from camera to its queues.</span>
+<span class="sd">        :param name: Camera type.</span>
+<span class="sd">        :param frame: Frame to pass to queue.</span>
+<span class="sd">        :param camera_switch: Camera synchronization switch reference for shared memory.</span>
+<span class="sd">        :param video_queue_IR: IR camera queue reference for multiprocessing shared memory.</span>
+<span class="sd">        :param video_queue_RGB: RGB camera queue reference for multiprocessing shared memory.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">StereoCamera</span><span class="o">.</span><span class="n">synchronization_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;IR&quot;</span><span class="p">:</span>
+        <span class="n">video_queue_IR</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="n">camera_switch</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;RGB&quot;</span><span class="p">:</span>
+        <span class="n">video_queue_RGB</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="n">camera_switch</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">StereoCamera</span><span class="o">.</span><span class="n">synchronization_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="raise_error"><a class="viewcode-back" href="../CamerasProcessing.html#CamerasProcessing.raise_error">[docs]</a><span class="k">def</span> <span class="nf">raise_error</span><span class="p">(</span><span class="n">error</span><span class="p">,</span> <span class="n">event_log</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function that raising or putting error to list depending on test mode.</span>
+<span class="sd">        :param error: Passed error exception.</span>
+<span class="sd">        :param event_log: Event log to put error to.</span>
+<span class="sd">        :param message: Error message.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">StereoCamera</span><span class="o">.</span><span class="n">error_lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">StereoCamera</span><span class="o">.</span><span class="n">TEST_MODE</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unexpected </span><span class="si">{</span><span class="n">error</span><span class="si">=}</span><span class="s2">, </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">error</span><span class="p">)</span><span class="si">=}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">event_log</span><span class="o">.</span><span class="n">put_error</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+    <span class="n">StereoCamera</span><span class="o">.</span><span class="n">error_lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Adam Dradrach 179985.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

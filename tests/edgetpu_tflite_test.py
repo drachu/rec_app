@@ -17,6 +17,9 @@ image_path = "tests/test_images/test_image_03.jpg"
 DetectionModelEdgeTPU.TEST_TFLite = True
 
 def test_dataset_speed():
+    """
+    Testing prediction speed on dataset passed with path.
+    """
     os.chdir(ROOT_DIR)
     results = []
     detection_model = DetectionModelEdgeTPU(model_dir_path=model_path_edgetpu)
@@ -37,6 +40,9 @@ def test_dataset_speed():
 
 
 def test_load_model():
+    """
+    Testing possibility of loading TFLite/Edge TPU model from path.
+    """
     os.chdir(ROOT_DIR)
     detection_model = DetectionModelEdgeTPU(model_dir_path=model_path_edgetpu)
     input = detection_model.input_details[0]['shape']
@@ -47,6 +53,9 @@ def test_load_model():
     LOGGER.info("Valid input: %s", output)
 
 def test_preprocess():
+    """
+    Testing dimensions and type of preprocessed frame for TFLite/Edge TPU predcitions.
+    """
     os.chdir(ROOT_DIR)
     detection_model = DetectionModelEdgeTPU(model_dir_path=model_path_edgetpu)
     img = cv2.imread(image_path)
@@ -62,6 +71,9 @@ def test_preprocess():
     print("\nPreprocess time: " + str((preprocess_timer_stop - preprocess_timer_start).microseconds / 1000) + " ms")
 
 def test_nms():
+    """
+    Testing speed on Non-maximum suppression algorithm.
+    """
     os.chdir(ROOT_DIR)
     detection_model = DetectionModelEdgeTPU(model_dir_path=model_path_edgetpu)
     img = cv2.imread(image_path)
@@ -78,6 +90,9 @@ def test_nms():
 
 
 def test_single_speed():
+    """
+    Testing prediction speed on single frame.
+    """
     os.chdir(ROOT_DIR)
     detection_model = DetectionModelEdgeTPU(model_dir_path=model_path_edgetpu)
     assert detection_model is not None

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>tests.camera_processing_test &mdash; Pedestrian detection software using multimodal imaging and machine learning 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Pedestrian detection software using multimodal imaging and machine learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">rec_app</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Pedestrian detection software using multimodal imaging and machine learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">tests.camera_processing_test</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for tests.camera_processing_test</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="kn">from</span> <span class="nn">CamerasProcessing</span> <span class="kn">import</span> <span class="n">CameraProcess</span><span class="p">,</span> <span class="n">StereoCamera</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="n">LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">ROOT_DIR</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))[:</span><span class="o">-</span><span class="mi">5</span><span class="p">]</span>
+<span class="n">RGB_CAMERA_ID</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">IR_CAMERA_ID</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">FPS_TEST_TIME</span> <span class="o">=</span> <span class="mi">60</span>  <span class="c1"># seconds</span>
+
+
+<div class="viewcode-block" id="test_calibration_mapping"><a class="viewcode-back" href="../../tests.html#tests.camera_processing_test.test_calibration_mapping">[docs]</a><span class="k">def</span> <span class="nf">test_calibration_mapping</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Testing if calibrated frame have proper dimensions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">ROOT_DIR</span><span class="p">)</span>
+    <span class="n">stereo_camera</span> <span class="o">=</span> <span class="n">StereoCamera</span><span class="p">(</span><span class="n">TEST</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">map_rgb</span><span class="p">,</span> <span class="n">map_ir</span> <span class="o">=</span> <span class="n">stereo_camera</span><span class="o">.</span><span class="n">get_calibration_mapping</span><span class="p">(</span><span class="s1">&#39;AppResources/calibration/data/stereoMap.xml&#39;</span><span class="p">)</span>
+    <span class="n">rgb_image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s2">&quot;tests/test_images/test_rgb_image.jpg&quot;</span><span class="p">)</span>
+    <span class="n">rgb_image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">rgb_image</span><span class="p">,</span> <span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">488</span><span class="p">),</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">INTER_AREA</span><span class="p">)</span>
+    <span class="n">ir_image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s2">&quot;tests/test_images/test_ir_image.jpg&quot;</span><span class="p">)</span>
+    <span class="n">rgb_image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">ir_image</span><span class="p">,</span> <span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">488</span><span class="p">),</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">cv2</span><span class="o">.</span><span class="n">INTER_AREA</span><span class="p">)</span>
+    <span class="n">rgb_image_mapped</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">remap</span><span class="p">(</span><span class="n">rgb_image</span><span class="p">,</span> <span class="n">map_rgb</span><span class="o">.</span><span class="n">map_x</span><span class="p">,</span>
+                                 <span class="n">map_rgb</span><span class="o">.</span><span class="n">map_y</span><span class="p">,</span>
+                                 <span class="n">cv2</span><span class="o">.</span><span class="n">INTER_LANCZOS4</span><span class="p">,</span>
+                                 <span class="n">cv2</span><span class="o">.</span><span class="n">BORDER_CONSTANT</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">rgb_image_mapped</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">488</span><span class="p">,</span> <span class="mi">640</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">ir_image_mapped</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">remap</span><span class="p">(</span><span class="n">ir_image</span><span class="p">,</span> <span class="n">map_ir</span><span class="o">.</span><span class="n">map_x</span><span class="p">,</span>
+                                 <span class="n">map_ir</span><span class="o">.</span><span class="n">map_y</span><span class="p">,</span>
+                                 <span class="n">cv2</span><span class="o">.</span><span class="n">INTER_LANCZOS4</span><span class="p">,</span>
+                                 <span class="n">cv2</span><span class="o">.</span><span class="n">BORDER_CONSTANT</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">ir_image_mapped</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">488</span><span class="p">,</span> <span class="mi">640</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">combined_frame</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">addWeighted</span><span class="p">(</span><span class="n">rgb_image_mapped</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">ir_image_mapped</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="test_any_camera_connection"><a class="viewcode-back" href="../../tests.html#tests.camera_processing_test.test_any_camera_connection">[docs]</a><span class="k">def</span> <span class="nf">test_any_camera_connection</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Testing if application is able to establish connection with any camera connected to device.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">ROOT_DIR</span><span class="p">)</span>
+    <span class="n">stereo_camera</span> <span class="o">=</span> <span class="n">StereoCamera</span><span class="p">(</span><span class="n">TEST</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">stereo_camera</span><span class="o">.</span><span class="n">camera_switch</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">map_rgb</span><span class="p">,</span> <span class="n">map_ir</span> <span class="o">=</span> <span class="n">stereo_camera</span><span class="o">.</span><span class="n">get_calibration_mapping</span><span class="p">(</span><span class="s1">&#39;AppResources/calibration/data/stereoMap.xml&#39;</span><span class="p">)</span>
+    <span class="n">processes</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+        <span class="n">camera_process_RGB</span> <span class="o">=</span> <span class="n">CameraProcess</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">map_rgb</span><span class="p">,</span> <span class="n">TEST</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">processes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">camera_process_RGB</span><span class="p">)</span>
+        <span class="n">camera_process_RGB</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="n">stereo_camera</span><span class="o">.</span><span class="n">video_queue_RGB</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Could not get frame from IR camera!&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Could not get frame from IR camera!&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">frame</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="n">kill_processes</span><span class="p">(</span><span class="n">processes</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="test_rgb_camera_connection"><a class="viewcode-back" href="../../tests.html#tests.camera_processing_test.test_rgb_camera_connection">[docs]</a><span class="k">def</span> <span class="nf">test_rgb_camera_connection</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Testing if application is able to establish connection with any RGB camera.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">ROOT_DIR</span><span class="p">)</span>
+    <span class="n">stereo_camera</span> <span class="o">=</span> <span class="n">StereoCamera</span><span class="p">(</span><span class="n">TEST</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">stereo_camera</span><span class="o">.</span><span class="n">camera_switch</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">map_rgb</span><span class="p">,</span> <span class="n">map_ir</span> <span class="o">=</span> <span class="n">stereo_camera</span><span class="o">.</span><span class="n">get_calibration_mapping</span><span class="p">(</span><span class="s1">&#39;AppResources/calibration/data/stereoMap.xml&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">RGB_CAMERA_ID</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">id_RGB</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Windows&quot;</span> <span class="k">else</span> <span class="mi">2</span>
+        <span class="n">camera_process_RGB</span> <span class="o">=</span> <span class="n">CameraProcess</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">,</span> <span class="n">id_RGB</span><span class="p">,</span> <span class="n">map_rgb</span><span class="p">,</span> <span class="n">TEST</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">camera_process_RGB</span> <span class="o">=</span> <span class="n">CameraProcess</span><span class="p">(</span><span class="s2">&quot;RGB&quot;</span><span class="p">,</span> <span class="n">RGB_CAMERA_ID</span><span class="p">,</span> <span class="n">map_rgb</span><span class="p">,</span> <span class="n">TEST</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">camera_process_RGB</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="n">stereo_camera</span><span class="o">.</span><span class="n">video_queue_RGB</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Could not get frame from IR camera!&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Could not get frame from IR camera!&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">frame</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="n">camera_process_RGB</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="test_ir_camera_connection"><a class="viewcode-back" href="../../tests.html#tests.camera_processing_test.test_ir_camera_connection">[docs]</a><span class="k">def</span> <span class="nf">test_ir_camera_connection</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Testing if application is able to establish connection with any IR camera.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">ROOT_DIR</span><span class="p">)</span>
+    <span class="n">stereo_camera</span> <span class="o">=</span> <span class="n">StereoCamera</span><span class="p">(</span><span class="n">TEST</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">map_rgb</span><span class="p">,</span> <span class="n">map_ir</span> <span class="o">=</span> <span class="n">stereo_camera</span><span class="o">.</span><span class="n">get_calibration_mapping</span><span class="p">(</span><span class="s1">&#39;AppResources/calibration/data/stereoMap.xml&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">IR_CAMERA_ID</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">id_IR</span> <span class="o">=</span> <span class="mi">2</span> <span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Windows&quot;</span> <span class="k">else</span> <span class="mi">1</span>
+        <span class="n">camera_process_IR</span> <span class="o">=</span> <span class="n">CameraProcess</span><span class="p">(</span><span class="s2">&quot;IR&quot;</span><span class="p">,</span> <span class="n">id_IR</span><span class="p">,</span> <span class="n">map_ir</span><span class="p">,</span> <span class="n">TEST</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">camera_process_IR</span> <span class="o">=</span> <span class="n">CameraProcess</span><span class="p">(</span><span class="s2">&quot;IR&quot;</span><span class="p">,</span> <span class="n">IR_CAMERA_ID</span><span class="p">,</span> <span class="n">map_ir</span><span class="p">,</span> <span class="n">TEST</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">camera_process_IR</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="n">stereo_camera</span><span class="o">.</span><span class="n">video_queue_IR</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Could not get frame from IR camera!&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Could not get frame from any camera!&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">frame</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="n">camera_process_IR</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="test_whole_camera_connection"><a class="viewcode-back" href="../../tests.html#tests.camera_processing_test.test_whole_camera_connection">[docs]</a><span class="k">def</span> <span class="nf">test_whole_camera_connection</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Testing if application is able to establish connection with IR and RGB cameras using StereoCamera module.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">ROOT_DIR</span><span class="p">)</span>
+    <span class="n">stereo_camera</span> <span class="o">=</span> <span class="n">StereoCamera</span><span class="p">()</span>
+    <span class="n">frame</span> <span class="o">=</span> <span class="n">StereoCamera</span><span class="o">.</span><span class="n">synchronization_queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">LOGGER</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Frame has not been received!&quot;</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">frame</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="test_frame_speed"><a class="viewcode-back" href="../../tests.html#tests.camera_processing_test.test_frame_speed">[docs]</a><span class="k">def</span> <span class="nf">test_frame_speed</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Testing application FPS that is possible to achieve.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">ROOT_DIR</span><span class="p">)</span>
+    <span class="n">stereo_camera</span> <span class="o">=</span> <span class="n">StereoCamera</span><span class="p">()</span>
+    <span class="n">frame</span> <span class="o">=</span> <span class="n">StereoCamera</span><span class="o">.</span><span class="n">synchronization_queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+    <span class="n">counter_end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">+</span> <span class="n">FPS_TEST_TIME</span>
+    <span class="n">frames</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">counter_end</span><span class="p">:</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="n">StereoCamera</span><span class="o">.</span><span class="n">synchronization_queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="n">frames</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">FPS</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">frames</span><span class="o">/</span><span class="mi">60</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Camera achieved average of &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">FPS</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; frames per second!&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Test statistics:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Frames: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">frames</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Time: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">FPS_TEST_TIME</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;s&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="kill_processes"><a class="viewcode-back" href="../../tests.html#tests.camera_processing_test.kill_processes">[docs]</a><span class="k">def</span> <span class="nf">kill_processes</span><span class="p">(</span><span class="n">proc</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Turning off processes used in tests.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">proc</span><span class="p">:</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Adam Dradrach 179985.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

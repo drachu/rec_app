@@ -1,15 +1,23 @@
-import os
-
 import cv2
 import torch
-import datetime
+
+
 class DetectionModelCUDA:
+    """Detection model class using CPU or CUDA YOLO models. Detection itself is accessible thanks to
+    imported YOLOv5 repository."""
     def __init__(self, model_dir_path='AppResources/models/yv5/yv5n_ko.pt'):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.model_dir_path = model_dir_path
         self.model = torch.hub.load("yolov5", 'custom', path=model_dir_path, source='local')
 
     def draw_detections(self, results, image, labels=False):
+        """
+        Method that is printing predictions on passed frame.
+            :param results: List with predictions containing coordinates and confidences.
+            :param image: Image to draw predictions on.
+            :param labels: Logic value telling if confidences should be showed.
+            :return: Frame with predictions coordinates printed on.
+        """
         _results = results.pandas().xyxy[0].to_dict(orient="records")
         for _result in _results:
             _con = (round(_result['confidence'], 2))

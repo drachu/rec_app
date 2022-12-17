@@ -17,12 +17,18 @@ image_path = "tests/test_images/test_image_03.jpg"
 
 @pytest.mark.unit
 def test_load_model():
+    """
+    Testing possibility of loading Torch model from path.
+    """
     os.chdir(ROOT_DIR)
     detection_model = DetectionModelCUDA(model_dir_path=model_path_pytorch)
     assert detection_model.model is not None
     print("\nSuccessfuly loaded model on device: " + str(detection_model.device))
 
 def test_dataset_speed():
+    """
+    Testing prediction speed on dataset passed with path.
+    """
     os.chdir(ROOT_DIR)
     results = []
     detection_model = DetectionModelCUDA(model_dir_path=model_path_pytorch)
@@ -40,6 +46,9 @@ def test_dataset_speed():
     print("Used dataset: " + dataset_test_path)
 
 def test_single_speed():
+    """
+    Testing prediction speed on single frame.
+    """
     os.chdir(ROOT_DIR)
     detection_model = DetectionModelCUDA(model_dir_path=model_path_pytorch)
     test_image = cv2.imread(image_path)

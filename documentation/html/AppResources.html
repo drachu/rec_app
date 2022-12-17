@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AppResources package &mdash; Pedestrian detection software using multimodal imaging and machine learning 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="CamerasProcessing module" href="CamerasProcessing.html" />
+    <link rel="prev" title="App module" href="App.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Pedestrian detection software using multimodal imaging and machine learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">rec_app</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="App.html">App module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">AppResources package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-AppResources.AppDesign">AppResources.AppDesign module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#AppResources.AppDesign.CameraScreen"><code class="docutils literal notranslate"><span class="pre">CameraScreen</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#AppResources.AppDesign.InformationDialogContent"><code class="docutils literal notranslate"><span class="pre">InformationDialogContent</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#AppResources.AppDesign.LoadingScreen"><code class="docutils literal notranslate"><span class="pre">LoadingScreen</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#AppResources.AppDesign.MyToggleButton"><code class="docutils literal notranslate"><span class="pre">MyToggleButton</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#AppResources.AppDesign.create_error_dialog"><code class="docutils literal notranslate"><span class="pre">create_error_dialog()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#AppResources.AppDesign.create_information_dialog"><code class="docutils literal notranslate"><span class="pre">create_information_dialog()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#AppResources.AppDesign.generate_app_design"><code class="docutils literal notranslate"><span class="pre">generate_app_design()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#AppResources.AppDesign.generate_bottom_panel"><code class="docutils literal notranslate"><span class="pre">generate_bottom_panel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#AppResources.AppDesign.generate_detection_info_card"><code class="docutils literal notranslate"><span class="pre">generate_detection_info_card()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#AppResources.AppDesign.generate_detection_mode"><code class="docutils literal notranslate"><span class="pre">generate_detection_mode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#AppResources.AppDesign.generate_information_layout"><code class="docutils literal notranslate"><span class="pre">generate_information_layout()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#AppResources.AppDesign.generate_left_card"><code class="docutils literal notranslate"><span class="pre">generate_left_card()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#AppResources.AppDesign.generate_log_card"><code class="docutils literal notranslate"><span class="pre">generate_log_card()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#AppResources.AppDesign.generate_memory_info_card"><code class="docutils literal notranslate"><span class="pre">generate_memory_info_card()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#AppResources.AppDesign.generate_record_card"><code class="docutils literal notranslate"><span class="pre">generate_record_card()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#AppResources.AppDesign.log_app_event"><code class="docutils literal notranslate"><span class="pre">log_app_event()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#AppResources.AppDesign.log_camera_event"><code class="docutils literal notranslate"><span class="pre">log_camera_event()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#AppResources.AppDesign.update_widgets_theme"><code class="docutils literal notranslate"><span class="pre">update_widgets_theme()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-AppResources">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="CamerasProcessing.html">CamerasProcessing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CamerasUtils.html">CamerasUtils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DetectionCUDA.html">DetectionCUDA module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DetectionEdgeTPU.html">DetectionEdgeTPU module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run.html">run module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tests.html">tests package</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Pedestrian detection software using multimodal imaging and machine learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">rec_app</a></li>
+      <li class="breadcrumb-item active">AppResources package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/AppResources.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="appresources-package">
+<h1>AppResources package<a class="headerlink" href="#appresources-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-AppResources.AppDesign">
+<span id="appresources-appdesign-module"></span><h2>AppResources.AppDesign module<a class="headerlink" href="#module-AppResources.AppDesign" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="AppResources.AppDesign.CameraScreen">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AppResources.AppDesign.</span></span><span class="sig-name descname"><span class="pre">CameraScreen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AppResources/AppDesign.html#CameraScreen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AppResources.AppDesign.CameraScreen" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Screen</span></code></p>
+<p>Design for camera image display screen.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="AppResources.AppDesign.InformationDialogContent">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AppResources.AppDesign.</span></span><span class="sig-name descname"><span class="pre">InformationDialogContent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AppResources/AppDesign.html#InformationDialogContent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AppResources.AppDesign.InformationDialogContent" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MDBoxLayout</span></code></p>
+<p>Special class with design for information dialog design.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="AppResources.AppDesign.LoadingScreen">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AppResources.AppDesign.</span></span><span class="sig-name descname"><span class="pre">LoadingScreen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AppResources/AppDesign.html#LoadingScreen"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AppResources.AppDesign.LoadingScreen" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Screen</span></code></p>
+<p>Design for loading screen.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="AppResources.AppDesign.MyToggleButton">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">AppResources.AppDesign.</span></span><span class="sig-name descname"><span class="pre">MyToggleButton</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AppResources/AppDesign.html#MyToggleButton"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AppResources.AppDesign.MyToggleButton" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MDFlatButton</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">MDToggleButton</span></code></p>
+<p>Special class with radio buttons design for IR, RGB, and All modes display.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="AppResources.AppDesign.create_error_dialog">
+<span class="sig-prename descclassname"><span class="pre">AppResources.AppDesign.</span></span><span class="sig-name descname"><span class="pre">create_error_dialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_errors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app_errors</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AppResources/AppDesign.html#create_error_dialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AppResources.AppDesign.create_error_dialog" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Generates error dialog with buttons.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param self</dt>
+<dd class="field-odd"><p>Application instance self.</p>
+</dd>
+<dt class="field-even">return</dt>
+<dd class="field-even"><p>Generated error dialog.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="AppResources.AppDesign.create_information_dialog">
+<span class="sig-prename descclassname"><span class="pre">AppResources.AppDesign.</span></span><span class="sig-name descname"><span class="pre">create_information_dialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AppResources/AppDesign.html#create_information_dialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AppResources.AppDesign.create_information_dialog" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Generates information dialog with about text and instructions image.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param self</dt>
+<dd class="field-odd"><p>Application instance self.</p>
+</dd>
+<dt class="field-even">return</dt>
+<dd class="field-even"><p>Generated information dialog.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="AppResources.AppDesign.generate_app_design">
+<span class="sig-prename descclassname"><span class="pre">AppResources.AppDesign.</span></span><span class="sig-name descname"><span class="pre">generate_app_design</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AppResources/AppDesign.html#generate_app_design"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AppResources.AppDesign.generate_app_design" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Main build method for application design.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param self</dt>
+<dd class="field-odd"><p>Application instance self.</p>
+</dd>
+<dt class="field-even">return</dt>
+<dd class="field-even"><p>Generated screen design.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="AppResources.AppDesign.generate_bottom_panel">
+<span class="sig-prename descclassname"><span class="pre">AppResources.AppDesign.</span></span><span class="sig-name descname"><span class="pre">generate_bottom_panel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AppResources/AppDesign.html#generate_bottom_panel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AppResources.AppDesign.generate_bottom_panel" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Generates bottom panel design with image display mode radio buttons.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param self</dt>
+<dd class="field-odd"><p>Application instance self.</p>
+</dd>
+<dt class="field-even">return</dt>
+<dd class="field-even"><p>Generated bottom layout panel.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="AppResources.AppDesign.generate_detection_info_card">
+<span class="sig-prename descclassname"><span class="pre">AppResources.AppDesign.</span></span><span class="sig-name descname"><span class="pre">generate_detection_info_card</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AppResources/AppDesign.html#generate_detection_info_card"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AppResources.AppDesign.generate_detection_info_card" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Generates detection mode information label design.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param self</dt>
+<dd class="field-odd"><p>Application instance self.</p>
+</dd>
+<dt class="field-even">return</dt>
+<dd class="field-even"><p>Generated information layout.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="AppResources.AppDesign.generate_detection_mode">
+<span class="sig-prename descclassname"><span class="pre">AppResources.AppDesign.</span></span><span class="sig-name descname"><span class="pre">generate_detection_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AppResources/AppDesign.html#generate_detection_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AppResources.AppDesign.generate_detection_mode" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Generates floating button with expandable buttons for selecting detection modes.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param self</dt>
+<dd class="field-odd"><p>Application instance self.</p>
+</dd>
+<dt class="field-even">return</dt>
+<dd class="field-even"><p>Generated detection mode buttons instance.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="AppResources.AppDesign.generate_information_layout">
+<span class="sig-prename descclassname"><span class="pre">AppResources.AppDesign.</span></span><span class="sig-name descname"><span class="pre">generate_information_layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AppResources/AppDesign.html#generate_information_layout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AppResources.AppDesign.generate_information_layout" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Generates information layout with ‘about’ modal button, JET mapping and theme switches.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param self</dt>
+<dd class="field-odd"><p>Application instance self.</p>
+</dd>
+<dt class="field-even">return</dt>
+<dd class="field-even"><p>Generated information layout.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="AppResources.AppDesign.generate_left_card">
+<span class="sig-prename descclassname"><span class="pre">AppResources.AppDesign.</span></span><span class="sig-name descname"><span class="pre">generate_left_card</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AppResources/AppDesign.html#generate_left_card"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AppResources.AppDesign.generate_left_card" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Generates left card design with PG logo, exit button, information layout, event log, record info and memory info card.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param self</dt>
+<dd class="field-odd"><p>Application instance self.</p>
+</dd>
+<dt class="field-even">return</dt>
+<dd class="field-even"><p>Generated left card design.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="AppResources.AppDesign.generate_log_card">
+<span class="sig-prename descclassname"><span class="pre">AppResources.AppDesign.</span></span><span class="sig-name descname"><span class="pre">generate_log_card</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AppResources/AppDesign.html#generate_log_card"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AppResources.AppDesign.generate_log_card" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Generates event log card design.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param self</dt>
+<dd class="field-odd"><p>Application instance self.</p>
+</dd>
+<dt class="field-even">return</dt>
+<dd class="field-even"><p>Generated event log card design.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="AppResources.AppDesign.generate_memory_info_card">
+<span class="sig-prename descclassname"><span class="pre">AppResources.AppDesign.</span></span><span class="sig-name descname"><span class="pre">generate_memory_info_card</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AppResources/AppDesign.html#generate_memory_info_card"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AppResources.AppDesign.generate_memory_info_card" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Generates memory card design with progress bar and information about space on device.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param self</dt>
+<dd class="field-odd"><p>Application instance self.</p>
+</dd>
+<dt class="field-even">return</dt>
+<dd class="field-even"><p>Generated memory information card.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="AppResources.AppDesign.generate_record_card">
+<span class="sig-prename descclassname"><span class="pre">AppResources.AppDesign.</span></span><span class="sig-name descname"><span class="pre">generate_record_card</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AppResources/AppDesign.html#generate_record_card"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AppResources.AppDesign.generate_record_card" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Generates recording card design with record button switch, progress bar and passed time information.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param self</dt>
+<dd class="field-odd"><p>Application instance self.</p>
+</dd>
+<dt class="field-even">return</dt>
+<dd class="field-even"><p>Generated recording card instance.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="AppResources.AppDesign.log_app_event">
+<span class="sig-prename descclassname"><span class="pre">AppResources.AppDesign.</span></span><span class="sig-name descname"><span class="pre">log_app_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Record</span> <span class="pre">saved'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AppResources/AppDesign.html#log_app_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AppResources.AppDesign.log_app_event" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Putting application event log to interface.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param self</dt>
+<dd class="field-odd"><p>Application instance self.</p>
+</dd>
+<dt class="field-even">param</dt>
+<dd class="field-even"><p>Event log message.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="AppResources.AppDesign.log_camera_event">
+<span class="sig-prename descclassname"><span class="pre">AppResources.AppDesign.</span></span><span class="sig-name descname"><span class="pre">log_camera_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AppResources/AppDesign.html#log_camera_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AppResources.AppDesign.log_camera_event" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Putting camera event log to interface.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param self</dt>
+<dd class="field-odd"><p>Application instance self.</p>
+</dd>
+<dt class="field-even">param</dt>
+<dd class="field-even"><p>Event log message.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="AppResources.AppDesign.update_widgets_theme">
+<span class="sig-prename descclassname"><span class="pre">AppResources.AppDesign.</span></span><span class="sig-name descname"><span class="pre">update_widgets_theme</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theme</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">font_icon_color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/AppResources/AppDesign.html#update_widgets_theme"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#AppResources.AppDesign.update_widgets_theme" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Switches theme mode for some widgets. Created because of kivymd bug.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param self</dt>
+<dd class="field-odd"><p>Application instance self.</p>
+</dd>
+<dt class="field-even">param theme</dt>
+<dd class="field-even"><p>Passed theme color.</p>
+</dd>
+<dt class="field-odd">param font_icon_color</dt>
+<dd class="field-odd"><p>Passed font and icon color.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-AppResources">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-AppResources" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="App.html" class="btn btn-neutral float-left" title="App module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="CamerasProcessing.html" class="btn btn-neutral float-right" title="CamerasProcessing module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Adam Dradrach 179985.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

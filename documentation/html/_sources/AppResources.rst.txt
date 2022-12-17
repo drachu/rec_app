@@ -1,0 +1,21 @@
+AppResources package
+====================
+
+Submodules
+----------
+
+AppResources.AppDesign module
+-----------------------------
+
+.. automodule:: AppResources.AppDesign
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: AppResources
+   :members:
+   :undoc-members:
+   :show-inheritance:

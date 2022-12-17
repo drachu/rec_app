@@ -1,0 +1,7 @@
+CamerasUtils module
+===================
+
+.. automodule:: CamerasUtils
+   :members:
+   :undoc-members:
+   :show-inheritance:

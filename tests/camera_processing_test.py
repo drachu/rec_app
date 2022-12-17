@@ -3,10 +3,8 @@ import logging
 import platform
 import time
 
-from CamerasProcessing import CameraProcess, SynchronizationProcess, StereoCamera, CalibrationMapping
-from multiprocessing import Queue
+from CamerasProcessing import CameraProcess, StereoCamera
 import cv2
-import pytest
 LOGGER = logging.getLogger(__name__)
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))[:-5]
@@ -14,7 +12,11 @@ RGB_CAMERA_ID = None
 IR_CAMERA_ID = None
 FPS_TEST_TIME = 60  # seconds
 
+
 def test_calibration_mapping():
+    """
+    Testing if calibrated frame have proper dimensions.
+    """
     os.chdir(ROOT_DIR)
     stereo_camera = StereoCamera(TEST=True)
     map_rgb, map_ir = stereo_camera.get_calibration_mapping('AppResources/calibration/data/stereoMap.xml')
@@ -37,6 +39,9 @@ def test_calibration_mapping():
 
 
 def test_any_camera_connection():
+    """
+    Testing if application is able to establish connection with any camera connected to device.
+    """
     os.chdir(ROOT_DIR)
     stereo_camera = StereoCamera(TEST=True)
     stereo_camera.camera_switch.value = False
@@ -57,6 +62,9 @@ def test_any_camera_connection():
     time.sleep(4)
 
 def test_rgb_camera_connection():
+    """
+    Testing if application is able to establish connection with any RGB camera.
+    """
     os.chdir(ROOT_DIR)
     stereo_camera = StereoCamera(TEST=True)
     stereo_camera.camera_switch.value = False
@@ -79,6 +87,9 @@ def test_rgb_camera_connection():
     time.sleep(4)
 
 def test_ir_camera_connection():
+    """
+    Testing if application is able to establish connection with any IR camera.
+    """
     os.chdir(ROOT_DIR)
     stereo_camera = StereoCamera(TEST=True)
     map_rgb, map_ir = stereo_camera.get_calibration_mapping('AppResources/calibration/data/stereoMap.xml')
@@ -100,6 +111,9 @@ def test_ir_camera_connection():
     time.sleep(4)
 
 def test_whole_camera_connection():
+    """
+    Testing if application is able to establish connection with IR and RGB cameras using StereoCamera module.
+    """
     os.chdir(ROOT_DIR)
     stereo_camera = StereoCamera()
     frame = StereoCamera.synchronization_queue.get(timeout=15)
@@ -108,6 +122,9 @@ def test_whole_camera_connection():
         assert frame is not None
 
 def test_frame_speed():
+    """
+    Testing application FPS that is possible to achieve.
+    """
     os.chdir(ROOT_DIR)
     stereo_camera = StereoCamera()
     frame = StereoCamera.synchronization_queue.get(timeout=15)
@@ -123,8 +140,10 @@ def test_frame_speed():
     print("\nTime: " + str(FPS_TEST_TIME) + "s")
 
 
-
 def kill_processes(proc):
+    """
+    Turning off processes used in tests.
+    """
     for p in proc:
         p.kill()
         time.sleep(3)

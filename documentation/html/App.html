@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>App module &mdash; Pedestrian detection software using multimodal imaging and machine learning 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="AppResources package" href="AppResources.html" />
+    <link rel="prev" title="rec_app" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Pedestrian detection software using multimodal imaging and machine learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">rec_app</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">App module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#App.MainApp"><code class="docutils literal notranslate"><span class="pre">MainApp</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#App.MainApp.VideoThread"><code class="docutils literal notranslate"><span class="pre">MainApp.VideoThread</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#App.MainApp.app_errors"><code class="docutils literal notranslate"><span class="pre">MainApp.app_errors</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#App.MainApp.build"><code class="docutils literal notranslate"><span class="pre">MainApp.build()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#App.MainApp.camera_started"><code class="docutils literal notranslate"><span class="pre">MainApp.camera_started</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#App.MainApp.check_camera_errors"><code class="docutils literal notranslate"><span class="pre">MainApp.check_camera_errors()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#App.MainApp.close_application"><code class="docutils literal notranslate"><span class="pre">MainApp.close_application()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#App.MainApp.close_error_dialog"><code class="docutils literal notranslate"><span class="pre">MainApp.close_error_dialog()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#App.MainApp.close_info_dialog"><code class="docutils literal notranslate"><span class="pre">MainApp.close_info_dialog()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#App.MainApp.error_dialog"><code class="docutils literal notranslate"><span class="pre">MainApp.error_dialog</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#App.MainApp.load_video"><code class="docutils literal notranslate"><span class="pre">MainApp.load_video()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#App.MainApp.memory_space"><code class="docutils literal notranslate"><span class="pre">MainApp.memory_space</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#App.MainApp.record_time"><code class="docutils literal notranslate"><span class="pre">MainApp.record_time</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#App.MainApp.show_error_dialog"><code class="docutils literal notranslate"><span class="pre">MainApp.show_error_dialog()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#App.MainApp.show_info_dialog"><code class="docutils literal notranslate"><span class="pre">MainApp.show_info_dialog()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#App.MainApp.show_ir_colors"><code class="docutils literal notranslate"><span class="pre">MainApp.show_ir_colors()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#App.MainApp.switch_camera_mode"><code class="docutils literal notranslate"><span class="pre">MainApp.switch_camera_mode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#App.MainApp.switch_detection_mode"><code class="docutils literal notranslate"><span class="pre">MainApp.switch_detection_mode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#App.MainApp.switch_recording"><code class="docutils literal notranslate"><span class="pre">MainApp.switch_recording()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#App.MainApp.switch_theme_mode"><code class="docutils literal notranslate"><span class="pre">MainApp.switch_theme_mode()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#App.MainApp.try_restart_camera"><code class="docutils literal notranslate"><span class="pre">MainApp.try_restart_camera()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#App.MainApp.update_camera_log"><code class="docutils literal notranslate"><span class="pre">MainApp.update_camera_log()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#App.MainApp.update_image"><code class="docutils literal notranslate"><span class="pre">MainApp.update_image()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#App.MainApp.update_memory_space"><code class="docutils literal notranslate"><span class="pre">MainApp.update_memory_space()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#App.MainApp.update_record"><code class="docutils literal notranslate"><span class="pre">MainApp.update_record()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#App.run_app"><code class="docutils literal notranslate"><span class="pre">run_app()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#App.save_recording"><code class="docutils literal notranslate"><span class="pre">save_recording()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="AppResources.html">AppResources package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CamerasProcessing.html">CamerasProcessing module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="CamerasUtils.html">CamerasUtils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DetectionCUDA.html">DetectionCUDA module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DetectionEdgeTPU.html">DetectionEdgeTPU module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run.html">run module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tests.html">tests package</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Pedestrian detection software using multimodal imaging and machine learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">rec_app</a></li>
+      <li class="breadcrumb-item active">App module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/App.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-App">
+<span id="app-module"></span><h1>App module<a class="headerlink" href="#module-App" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="App.MainApp">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">App.</span></span><span class="sig-name descname"><span class="pre">MainApp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/App.html#MainApp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#App.MainApp" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MDApp</span></code></p>
+<p>Main application class representing program instance.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="App.MainApp.VideoThread">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">VideoThread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/App.html#MainApp.VideoThread"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#App.MainApp.VideoThread" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Thread</span></code></p>
+<p>Thread that is purpose is to connect synchronization process queue with application.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="App.MainApp.VideoThread.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/App.html#MainApp.VideoThread.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#App.MainApp.VideoThread.run" title="Permalink to this definition"></a></dt>
+<dd><p>Method representing the thread’s activity.</p>
+<p>You may override this method in a subclass. The standard run() method
+invokes the callable object passed to the object’s constructor as the
+target argument, if any, with sequential and keyword arguments taken
+from the args and kwargs arguments, respectively.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="App.MainApp.app_errors">
+<span class="sig-name descname"><span class="pre">app_errors</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#App.MainApp.app_errors" title="Permalink to this definition"></a></dt>
+<dd><p>List with recorded application errors.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="App.MainApp.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/App.html#MainApp.build"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#App.MainApp.build" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>This method is building main application design and is starting video thread.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">return</dt>
+<dd class="field-odd"><p>Screen instance with all children widgets passed to interface.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="App.MainApp.camera_started">
+<span class="sig-name descname"><span class="pre">camera_started</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#App.MainApp.camera_started" title="Permalink to this definition"></a></dt>
+<dd><p>Logic value telling if cameras have started their work.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="App.MainApp.check_camera_errors">
+<span class="sig-name descname"><span class="pre">check_camera_errors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/App.html#MainApp.check_camera_errors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#App.MainApp.check_camera_errors" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>This method is converting Proxy List camera errors to standard python list and is passing it to ‘show_error_dialog’ function.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param logs</dt>
+<dd class="field-odd"><p>Proxy List with Cameras Processing errors</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="App.MainApp.close_application">
+<span class="sig-name descname"><span class="pre">close_application</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/App.html#MainApp.close_application"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#App.MainApp.close_application" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Closing whole application method.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param instance</dt>
+<dd class="field-odd"><p>Calling widget instance</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="App.MainApp.close_error_dialog">
+<span class="sig-name descname"><span class="pre">close_error_dialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/App.html#MainApp.close_error_dialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#App.MainApp.close_error_dialog" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Closing error dialog method.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param instance</dt>
+<dd class="field-odd"><p>Calling widget instance</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="App.MainApp.close_info_dialog">
+<span class="sig-name descname"><span class="pre">close_info_dialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/App.html#MainApp.close_info_dialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#App.MainApp.close_info_dialog" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Closing information dialog method.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param instance</dt>
+<dd class="field-odd"><p>Calling widget instance</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="App.MainApp.error_dialog">
+<span class="sig-name descname"><span class="pre">error_dialog</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#App.MainApp.error_dialog" title="Permalink to this definition"></a></dt>
+<dd><p>Instance of error dialog.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="App.MainApp.load_video">
+<span class="sig-name descname"><span class="pre">load_video</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/App.html#MainApp.load_video"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#App.MainApp.load_video" title="Permalink to this definition"></a></dt>
+<dd><p>Looped by video thread method that is passing frames from synchronization queue to application.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="App.MainApp.memory_space">
+<span class="sig-name descname"><span class="pre">memory_space</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#App.MainApp.memory_space" title="Permalink to this definition"></a></dt>
+<dd><p>Available space on device.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="App.MainApp.record_time">
+<span class="sig-name descname"><span class="pre">record_time</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#App.MainApp.record_time" title="Permalink to this definition"></a></dt>
+<dd><p>Actual time passed while recording frames.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="App.MainApp.show_error_dialog">
+<span class="sig-name descname"><span class="pre">show_error_dialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/App.html#MainApp.show_error_dialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#App.MainApp.show_error_dialog" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Method that is displaying modal with errors from application and cameras.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param logs</dt>
+<dd class="field-odd"><p>Error logs from cameras</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="App.MainApp.show_info_dialog">
+<span class="sig-name descname"><span class="pre">show_info_dialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/App.html#MainApp.show_info_dialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#App.MainApp.show_info_dialog" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Showing information dialog method.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param instance</dt>
+<dd class="field-odd"><p>Calling widget instance</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="App.MainApp.show_ir_colors">
+<span class="sig-name descname"><span class="pre">show_ir_colors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/App.html#MainApp.show_ir_colors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#App.MainApp.show_ir_colors" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Function called by button that is switching displaying IR frames in JET map color mode.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param instance</dt>
+<dd class="field-odd"><p>Calling widget state</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="App.MainApp.switch_camera_mode">
+<span class="sig-name descname"><span class="pre">switch_camera_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/App.html#MainApp.switch_camera_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#App.MainApp.switch_camera_mode" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>This method is switching camera display mode depending on button instance calling it.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param instance</dt>
+<dd class="field-odd"><p>Calling button instance</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="App.MainApp.switch_detection_mode">
+<span class="sig-name descname"><span class="pre">switch_detection_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/App.html#MainApp.switch_detection_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#App.MainApp.switch_detection_mode" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>This method switches detection mode displayed on interface card text and changes fields on StereoCamera.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param detection</dt>
+<dd class="field-odd"><p>Detection state</p>
+</dd>
+<dt class="field-even">param labels</dt>
+<dd class="field-even"><p>Labels displaying on predictions state</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="App.MainApp.switch_recording">
+<span class="sig-name descname"><span class="pre">switch_recording</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/App.html#MainApp.switch_recording"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#App.MainApp.switch_recording" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>This method is switching recording state located in StereoCamera module.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param instance</dt>
+<dd class="field-odd"><p>Calling button instance</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="App.MainApp.switch_theme_mode">
+<span class="sig-name descname"><span class="pre">switch_theme_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/App.html#MainApp.switch_theme_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#App.MainApp.switch_theme_mode" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Method that is switching application visual theme mode - light or dark.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param instance</dt>
+<dd class="field-odd"><p>Calling widget instance</p>
+</dd>
+<dt class="field-even">param state</dt>
+<dd class="field-even"><p>Passed state - true (dark) or false (light)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="App.MainApp.try_restart_camera">
+<span class="sig-name descname"><span class="pre">try_restart_camera</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/App.html#MainApp.try_restart_camera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#App.MainApp.try_restart_camera" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>This method is restarting stereo camera instance to again connect to cameras. Setting all needed values to default.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param instance</dt>
+<dd class="field-odd"><p>Calling widget instance</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="App.MainApp.update_camera_log">
+<span class="sig-name descname"><span class="pre">update_camera_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/App.html#MainApp.update_camera_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#App.MainApp.update_camera_log" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>This method converting Proxy List camera log to standard python list and is passing it to ‘log_camera_event’ function.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param logs</dt>
+<dd class="field-odd"><p>Proxy List with Cameras Processing logs</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="App.MainApp.update_image">
+<span class="sig-name descname"><span class="pre">update_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/App.html#MainApp.update_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#App.MainApp.update_image" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>App loop scheduled method that is passing frames from Camera Processing to interface.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param frame</dt>
+<dd class="field-odd"><p>Passed frame from Camera Processing</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="App.MainApp.update_memory_space">
+<span class="sig-name descname"><span class="pre">update_memory_space</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/App.html#MainApp.update_memory_space"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#App.MainApp.update_memory_space" title="Permalink to this definition"></a></dt>
+<dd><p>This method updated static field with left memory space on device and interface label.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="App.MainApp.update_record">
+<span class="sig-name descname"><span class="pre">update_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/App.html#MainApp.update_record"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#App.MainApp.update_record" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>This is app looped function that is checking time which has passed. If it is more than 15 seconds recording is stopped.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param instance</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="App.run_app">
+<span class="sig-prename descclassname"><span class="pre">App.</span></span><span class="sig-name descname"><span class="pre">run_app</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/App.html#run_app"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#App.run_app" title="Permalink to this definition"></a></dt>
+<dd><p>This static function is starting application and sets its configs.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="App.save_recording">
+<span class="sig-prename descclassname"><span class="pre">App.</span></span><span class="sig-name descname"><span class="pre">save_recording</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">records</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app_self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/App.html#save_recording"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#App.save_recording" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Method that saves passed frames to file in zip format.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param name</dt>
+<dd class="field-odd"><p>Image type name</p>
+</dd>
+<dt class="field-even">param records</dt>
+<dd class="field-even"><p>List with records which includes frames and its names</p>
+</dd>
+<dt class="field-odd">param app_self</dt>
+<dd class="field-odd"><p>Application instance self</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="rec_app" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="AppResources.html" class="btn btn-neutral float-right" title="AppResources package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Adam Dradrach 179985.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

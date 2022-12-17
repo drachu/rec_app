@@ -1,0 +1,7 @@
+DetectionEdgeTPU module
+=======================
+
+.. automodule:: DetectionEdgeTPU
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,3 +1,7 @@
+"""Python script which should be run in order to start application.
+Depending on device system interface is displayed (Windows) or only image from cameras is showed
+with detection set on (Linux)."""
+
 import platform
 import multiprocessing
 if __name__ == '__main__':

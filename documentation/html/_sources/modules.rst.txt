@@ -1,0 +1,14 @@
+rec_app
+=======
+
+.. toctree::
+   :maxdepth: 4
+
+   App
+   AppResources
+   CamerasProcessing
+   CamerasUtils
+   DetectionCUDA
+   DetectionEdgeTPU
+   run
+   tests

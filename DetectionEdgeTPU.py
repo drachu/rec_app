@@ -4,19 +4,21 @@ import torch
 import cv2
 import numpy as np
 import torchvision
-import datetime
-import glob
-import sys
-
 
 class DetectionModelEdgeTPU:
+    """Detection model class that is used as instance of tools for TFLite and Edge TPU models."""
     TEST_TFLite = False
+    """If set to True it is forced to use TFLite models and type of prediction."""
 
     def __init__(self, model_dir_path="AppResources/models/yv5/yv5n_ko_uint8_384_512_edgetpu.tflite"):
         self.device = torch.device('cpu')
         self.initliazlie_interpreter(model_dir_path)
 
     def initliazlie_interpreter(self, path):
+        """
+        Setting up interpreter of detection model imported from specific path.
+            :param path: Path to model.
+        """
         self.delegate = {
             'Linux': 'libedgetpu.so.1',
             'Darwin': 'libedgetpu.1.dylib',
@@ -33,6 +35,11 @@ class DetectionModelEdgeTPU:
         self.output_scale, self.output_zero_point = self.output_details[0]['quantization']
 
     def preproces_image_for_detect(self, frame):
+        """
+        Preparing frame for detection model input. Resizes, transposes and adds batch channel.
+            :param frame: Frame to preprocess.
+            :return: Frame prepared for prediction and resized original image.
+        """
         _det_image = cv2.resize(frame, (512, 384), interpolation=cv2.INTER_LINEAR)
         _orig_frame = _det_image
         _det_image = _det_image.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
@@ -42,6 +49,11 @@ class DetectionModelEdgeTPU:
         return _det_image, _orig_frame
 
     def detection(self, frame):
+        """
+        Processing prediction on passed frame.
+            :param frame: Passed preprocessed frame.
+            :return: Prediction results as torch tensor.
+        """
         _batch, _channel, _height, _width = frame.shape
         _det_image = frame.permute(0, 2, 3, 1)
         _det_image = _det_image.cpu().numpy()
@@ -53,6 +65,11 @@ class DetectionModelEdgeTPU:
         return torch.from_numpy(result).to(self.device)
 
     def nms(self, predictions, conf_thres=0.45, iou_thres=0.30, nm=0):
+        """
+        Non-maximum suppression algorithm that is combining predictions and filters wrong with small class confidence.
+            :param predictions: Results from model predictions as torch tensor.
+            :return: Processed predictions ready to draw on image.
+        """
         class_count = predictions.shape[2] - nm - 5  # number of classes
         prediction_candidates = predictions[..., 4] > conf_thres  # candidates
 
@@ -79,6 +96,11 @@ class DetectionModelEdgeTPU:
         return _prediction[i].numpy()
 
     def xywh2xyxy(self, x):
+        """
+        Formatting xywh type coordinates to xyxy.
+        :param x: Predictions from model.
+        :return: Coordinates in xyxy type.
+        """
         _box = x.clone()
         _box[:, 0] = x[:, 0] - x[:, 2] / 2  # top left x
         _box[:, 1] = x[:, 1] - x[:, 3] / 2  # top left y
@@ -87,6 +109,13 @@ class DetectionModelEdgeTPU:
         return _box
 
     def draw_detections(self, output_data, frame, labels=False):
+        """
+        Method that is printing predictions on passed frame.
+            :param output_data: List with predictions containing coordinates and confidences.
+            :param frame: Image to draw predictions on.
+            :param labels: Logic value telling if confidences should be showed.
+            :return: Frame with predictions coordinates printed on.
+        """
         _image = frame
         for i, det in enumerate(output_data):
             _xy_min = (round(det[0]), round(det[1]))

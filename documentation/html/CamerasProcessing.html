@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CamerasProcessing module &mdash; Pedestrian detection software using multimodal imaging and machine learning 1.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="CamerasUtils module" href="CamerasUtils.html" />
+    <link rel="prev" title="AppResources package" href="AppResources.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> Pedestrian detection software using multimodal imaging and machine learning
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">rec_app</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="App.html">App module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="AppResources.html">AppResources package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">CamerasProcessing module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#CamerasProcessing.CameraProcess"><code class="docutils literal notranslate"><span class="pre">CameraProcess</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#CamerasProcessing.CameraProcess.resize_and_map"><code class="docutils literal notranslate"><span class="pre">CameraProcess.resize_and_map()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#CamerasProcessing.CameraProcess.start_camera"><code class="docutils literal notranslate"><span class="pre">CameraProcess.start_camera()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#CamerasProcessing.StereoCamera"><code class="docutils literal notranslate"><span class="pre">StereoCamera</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#CamerasProcessing.StereoCamera.TEST_MODE"><code class="docutils literal notranslate"><span class="pre">StereoCamera.TEST_MODE</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#CamerasProcessing.StereoCamera.camera_colors_IR"><code class="docutils literal notranslate"><span class="pre">StereoCamera.camera_colors_IR</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#CamerasProcessing.StereoCamera.camera_switch"><code class="docutils literal notranslate"><span class="pre">StereoCamera.camera_switch</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#CamerasProcessing.StereoCamera.cameras_reading"><code class="docutils literal notranslate"><span class="pre">StereoCamera.cameras_reading</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#CamerasProcessing.StereoCamera.detection_mode"><code class="docutils literal notranslate"><span class="pre">StereoCamera.detection_mode</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#CamerasProcessing.StereoCamera.display_mode"><code class="docutils literal notranslate"><span class="pre">StereoCamera.display_mode</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#CamerasProcessing.StereoCamera.error_lock"><code class="docutils literal notranslate"><span class="pre">StereoCamera.error_lock</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#CamerasProcessing.StereoCamera.event_log"><code class="docutils literal notranslate"><span class="pre">StereoCamera.event_log</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#CamerasProcessing.StereoCamera.get_calibration_mapping"><code class="docutils literal notranslate"><span class="pre">StereoCamera.get_calibration_mapping()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#CamerasProcessing.StereoCamera.recording_module"><code class="docutils literal notranslate"><span class="pre">StereoCamera.recording_module</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#CamerasProcessing.StereoCamera.start"><code class="docutils literal notranslate"><span class="pre">StereoCamera.start()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#CamerasProcessing.StereoCamera.synchronization_lock"><code class="docutils literal notranslate"><span class="pre">StereoCamera.synchronization_lock</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#CamerasProcessing.StereoCamera.synchronization_queue"><code class="docutils literal notranslate"><span class="pre">StereoCamera.synchronization_queue</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#CamerasProcessing.StereoCamera.video_queue_IR"><code class="docutils literal notranslate"><span class="pre">StereoCamera.video_queue_IR</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#CamerasProcessing.StereoCamera.video_queue_RGB"><code class="docutils literal notranslate"><span class="pre">StereoCamera.video_queue_RGB</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#CamerasProcessing.SynchronizationProcess"><code class="docutils literal notranslate"><span class="pre">SynchronizationProcess</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#CamerasProcessing.SynchronizationProcess.load_detection_model"><code class="docutils literal notranslate"><span class="pre">SynchronizationProcess.load_detection_model()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#CamerasProcessing.SynchronizationProcess.preprocess_combine_frames"><code class="docutils literal notranslate"><span class="pre">SynchronizationProcess.preprocess_combine_frames()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#CamerasProcessing.SynchronizationProcess.synchronization"><code class="docutils literal notranslate"><span class="pre">SynchronizationProcess.synchronization()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#CamerasProcessing.put_frame"><code class="docutils literal notranslate"><span class="pre">put_frame()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#CamerasProcessing.raise_error"><code class="docutils literal notranslate"><span class="pre">raise_error()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="CamerasUtils.html">CamerasUtils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DetectionCUDA.html">DetectionCUDA module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DetectionEdgeTPU.html">DetectionEdgeTPU module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="run.html">run module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tests.html">tests package</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Pedestrian detection software using multimodal imaging and machine learning</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">rec_app</a></li>
+      <li class="breadcrumb-item active">CamerasProcessing module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/CamerasProcessing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-CamerasProcessing">
+<span id="camerasprocessing-module"></span><h1>CamerasProcessing module<a class="headerlink" href="#module-CamerasProcessing" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="CamerasProcessing.CameraProcess">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CamerasProcessing.</span></span><span class="sig-name descname"><span class="pre">CameraProcess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cam_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stereo_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">TEST</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CamerasProcessing.html#CameraProcess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CamerasProcessing.CameraProcess" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Process</span></code></p>
+<p>Dynamic class for IR and RGB cameras processes that is responsible for cameras serving.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="CamerasProcessing.CameraProcess.resize_and_map">
+<span class="sig-name descname"><span class="pre">resize_and_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame_to_calibrate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_log</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CamerasProcessing.html#CameraProcess.resize_and_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CamerasProcessing.CameraProcess.resize_and_map" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Preprocessing frames - calibrating and resizing for proper values that system is normalized to.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param frame_to_calibrate</dt>
+<dd class="field-odd"><p>Passed frame to preprocess.</p>
+</dd>
+<dt class="field-even">param event_log</dt>
+<dd class="field-even"><p>Event log to record eventual errors or logs.</p>
+</dd>
+<dt class="field-odd">return</dt>
+<dd class="field-odd"><p>Calibrated frame.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="CamerasProcessing.CameraProcess.start_camera">
+<span class="sig-name descname"><span class="pre">start_camera</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">camera_switch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">video_queue_IR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">video_queue_RGB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_log</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CamerasProcessing.html#CameraProcess.start_camera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CamerasProcessing.CameraProcess.start_camera" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Starting camera connection using OpenCV functions. Starting loop if cameras are detected and connection is established.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param camera_switch</dt>
+<dd class="field-odd"><p>Camera synchronization reference for shared multiprocessing memory.</p>
+</dd>
+<dt class="field-even">param video_queue_IR</dt>
+<dd class="field-even"><p>IR camera queue reference for multiprocessing shared memory.</p>
+</dd>
+<dt class="field-odd">param video_queue_RGB</dt>
+<dd class="field-odd"><p>RGB camera queue reference for multiprocessing shared memory.</p>
+</dd>
+<dt class="field-even">param event_log</dt>
+<dd class="field-even"><p>Event log to record eventual errors or logs</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="CamerasProcessing.StereoCamera">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CamerasProcessing.</span></span><span class="sig-name descname"><span class="pre">StereoCamera</span></span><a class="reference internal" href="_modules/CamerasProcessing.html#StereoCamera"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CamerasProcessing.StereoCamera" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Main Class that represents whole stereo camera’s module.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="CamerasProcessing.StereoCamera.TEST_MODE">
+<span class="sig-name descname"><span class="pre">TEST_MODE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#CamerasProcessing.StereoCamera.TEST_MODE" title="Permalink to this definition"></a></dt>
+<dd><p>Depending on this field exceptions are raised and not showed on interface</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="CamerasProcessing.StereoCamera.camera_colors_IR">
+<span class="sig-name descname"><span class="pre">camera_colors_IR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Synchronized</span> <span class="pre">wrapper</span> <span class="pre">for</span> <span class="pre">c_bool(False)&gt;</span></em><a class="headerlink" href="#CamerasProcessing.StereoCamera.camera_colors_IR" title="Permalink to this definition"></a></dt>
+<dd><p>Logic value - when set on true JET mapped IR frames are displayed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="CamerasProcessing.StereoCamera.camera_switch">
+<span class="sig-name descname"><span class="pre">camera_switch</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Synchronized</span> <span class="pre">wrapper</span> <span class="pre">for</span> <span class="pre">c_bool(True)&gt;</span></em><a class="headerlink" href="#CamerasProcessing.StereoCamera.camera_switch" title="Permalink to this definition"></a></dt>
+<dd><p>Camera switch for cameras synchronization. Is changed whenever other process is using put_frame function.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="CamerasProcessing.StereoCamera.cameras_reading">
+<span class="sig-name descname"><span class="pre">cameras_reading</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Synchronized</span> <span class="pre">wrapper</span> <span class="pre">for</span> <span class="pre">c_bool(False)&gt;</span></em><a class="headerlink" href="#CamerasProcessing.StereoCamera.cameras_reading" title="Permalink to this definition"></a></dt>
+<dd><p>Logic value telling if cameras starting their work.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="CamerasProcessing.StereoCamera.detection_mode">
+<span class="sig-name descname"><span class="pre">detection_mode</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;CamerasUtils.DetectionMode</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#CamerasProcessing.StereoCamera.detection_mode" title="Permalink to this definition"></a></dt>
+<dd><p>Cameras detection mode instance with multiprocessing variables.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="CamerasProcessing.StereoCamera.display_mode">
+<span class="sig-name descname"><span class="pre">display_mode</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;CamerasUtils.DisplayMode</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#CamerasProcessing.StereoCamera.display_mode" title="Permalink to this definition"></a></dt>
+<dd><p>Cameras display mode instance with multiprocessing variables.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="CamerasProcessing.StereoCamera.error_lock">
+<span class="sig-name descname"><span class="pre">error_lock</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Lock(owner=None)&gt;</span></em><a class="headerlink" href="#CamerasProcessing.StereoCamera.error_lock" title="Permalink to this definition"></a></dt>
+<dd><p>Lock that prevents using error function by more than one process.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="CamerasProcessing.StereoCamera.event_log">
+<span class="sig-name descname"><span class="pre">event_log</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;CamerasUtils.EventLog</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#CamerasProcessing.StereoCamera.event_log" title="Permalink to this definition"></a></dt>
+<dd><p>Cameras event log instance containing error and log Proxy Lists.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="CamerasProcessing.StereoCamera.get_calibration_mapping">
+<span class="sig-name descname"><span class="pre">get_calibration_mapping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_log=&lt;CamerasUtils.EventLog</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CamerasProcessing.html#StereoCamera.get_calibration_mapping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CamerasProcessing.StereoCamera.get_calibration_mapping" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Reading from file calibration mapping variables for IR and RGB cameras.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param path</dt>
+<dd class="field-odd"><p>Path to file with calibration mapping.</p>
+</dd>
+<dt class="field-even">param event_log</dt>
+<dd class="field-even"><p>Event log to record eventual errors or logs.</p>
+</dd>
+<dt class="field-odd">return</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="CamerasProcessing.StereoCamera.recording_module">
+<span class="sig-name descname"><span class="pre">recording_module</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;CamerasUtils.RecordingModule</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#CamerasProcessing.StereoCamera.recording_module" title="Permalink to this definition"></a></dt>
+<dd><p>Recording module instance with RGB and IR frames lists.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="CamerasProcessing.StereoCamera.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id_RGB=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_IR=2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_log=&lt;CamerasUtils.EventLog</span> <span class="pre">object&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CamerasProcessing.html#StereoCamera.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CamerasProcessing.StereoCamera.start" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Method that is starting RGB, IR and synchronization processes.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param id_RGB</dt>
+<dd class="field-odd"><p>Identification for RGB camera depending on system.</p>
+</dd>
+<dt class="field-even">param id_IR</dt>
+<dd class="field-even"><p>Identification for IR camera depending on system.</p>
+</dd>
+<dt class="field-odd">param event_log</dt>
+<dd class="field-odd"><p>Event log to record eventual errors or logs.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="CamerasProcessing.StereoCamera.synchronization_lock">
+<span class="sig-name descname"><span class="pre">synchronization_lock</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;Lock(owner=None)&gt;</span></em><a class="headerlink" href="#CamerasProcessing.StereoCamera.synchronization_lock" title="Permalink to this definition"></a></dt>
+<dd><p>Synchronization multiprocessing log used for cameras synchronization in put_frame function.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="CamerasProcessing.StereoCamera.synchronization_queue">
+<span class="sig-name descname"><span class="pre">synchronization_queue</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;multiprocessing.queues.Queue</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#CamerasProcessing.StereoCamera.synchronization_queue" title="Permalink to this definition"></a></dt>
+<dd><p>Queue with processed and combined frames ready to deploy to application.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="CamerasProcessing.StereoCamera.video_queue_IR">
+<span class="sig-name descname"><span class="pre">video_queue_IR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;multiprocessing.queues.Queue</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#CamerasProcessing.StereoCamera.video_queue_IR" title="Permalink to this definition"></a></dt>
+<dd><p>Queue with IR frames got from IR camera.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="CamerasProcessing.StereoCamera.video_queue_RGB">
+<span class="sig-name descname"><span class="pre">video_queue_RGB</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;multiprocessing.queues.Queue</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#CamerasProcessing.StereoCamera.video_queue_RGB" title="Permalink to this definition"></a></dt>
+<dd><p>Queue with RGB frames got from RGB camera.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="CamerasProcessing.SynchronizationProcess">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">CamerasProcessing.</span></span><span class="sig-name descname"><span class="pre">SynchronizationProcess</span></span><a class="reference internal" href="_modules/CamerasProcessing.html#SynchronizationProcess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CamerasProcessing.SynchronizationProcess" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Process</span></code></p>
+<p>Synchronization process class that is responsible for combining IR and RGB frame, detection and passing frames to application.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="CamerasProcessing.SynchronizationProcess.load_detection_model">
+<span class="sig-name descname"><span class="pre">load_detection_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_log</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CamerasProcessing.html#SynchronizationProcess.load_detection_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CamerasProcessing.SynchronizationProcess.load_detection_model" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Loading detection model (CUDA or EDGE TPU) file depending on device’s system and capabilities.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param event_log</dt>
+<dd class="field-odd"><p>Event log to record eventual errors or logs.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="CamerasProcessing.SynchronizationProcess.preprocess_combine_frames">
+<span class="sig-name descname"><span class="pre">preprocess_combine_frames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frame_IR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame_RGB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_colors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_log</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CamerasProcessing.html#SynchronizationProcess.preprocess_combine_frames"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CamerasProcessing.SynchronizationProcess.preprocess_combine_frames" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Combining RGB and IR frames and applying JET map color mapping.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param frame_IR</dt>
+<dd class="field-odd"><p>Frame from IR camera.</p>
+</dd>
+<dt class="field-even">param frame_RGB</dt>
+<dd class="field-even"><p>Frame from RGB camera.</p>
+</dd>
+<dt class="field-odd">param camera_colors</dt>
+<dd class="field-odd"><p>Passed value that is telling if JET map should be used.</p>
+</dd>
+<dt class="field-even">param event_log</dt>
+<dd class="field-even"><p>Event log to record eventual errors or logs.</p>
+</dd>
+<dt class="field-odd">return</dt>
+<dd class="field-odd"><p>Combined frame from IR and RGB images.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="CamerasProcessing.SynchronizationProcess.synchronization">
+<span class="sig-name descname"><span class="pre">synchronization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detection_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recording_module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cameras_reading</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">synchronization_queue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">video_queue_IR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">video_queue_RGB</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_log</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_colors</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CamerasProcessing.html#SynchronizationProcess.synchronization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CamerasProcessing.SynchronizationProcess.synchronization" title="Permalink to this definition"></a></dt>
+<dd><p>Main synchronization process looped method that is reading frames from RGB and IR frames,
+processing detection and saving frames to recording module lists.</p>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">param detection_mode</dt>
+<dd class="field-odd"><p>Detection mode module main process reference for multiprocessing shared memory.</p>
+</dd>
+<dt class="field-even">param display_mode</dt>
+<dd class="field-even"><p>Display mode module main process reference for multiprocessing shared memory.</p>
+</dd>
+<dt class="field-odd">param recording_module</dt>
+<dd class="field-odd"><p>Recording mode module main process reference for multiprocessing shared memory.</p>
+</dd>
+<dt class="field-even">param cameras_reading</dt>
+<dd class="field-even"><p>Cameras reading bool main process reference for multiprocessing shared memory.</p>
+</dd>
+<dt class="field-odd">param synchronization_queue</dt>
+<dd class="field-odd"><p>Synchronization queue reference for multiprocessing shared memory.</p>
+</dd>
+<dt class="field-even">param video_queue_IR</dt>
+<dd class="field-even"><p>IR camera queue reference for multiprocessing shared memory.</p>
+</dd>
+<dt class="field-odd">param video_queue_RGB</dt>
+<dd class="field-odd"><p>RGB camera queue reference for multiprocessing shared memory.</p>
+</dd>
+<dt class="field-even">param event_log</dt>
+<dd class="field-even"><p>Event log to record eventual errors or logs.</p>
+</dd>
+<dt class="field-odd">param camera_colors</dt>
+<dd class="field-odd"><p>Passed value that is telling if JET map should be used.</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="CamerasProcessing.put_frame">
+<span class="sig-prename descclassname"><span class="pre">CamerasProcessing.</span></span><span class="sig-name descname"><span class="pre">put_frame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">camera_switch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">video_queue_IR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">video_queue_RGB</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CamerasProcessing.html#put_frame"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CamerasProcessing.put_frame" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Static synchronized function that is passing RGB or IR frame from camera to its queues.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param name</dt>
+<dd class="field-odd"><p>Camera type.</p>
+</dd>
+<dt class="field-even">param frame</dt>
+<dd class="field-even"><p>Frame to pass to queue.</p>
+</dd>
+<dt class="field-odd">param camera_switch</dt>
+<dd class="field-odd"><p>Camera synchronization switch reference for shared memory.</p>
+</dd>
+<dt class="field-even">param video_queue_IR</dt>
+<dd class="field-even"><p>IR camera queue reference for multiprocessing shared memory.</p>
+</dd>
+<dt class="field-odd">param video_queue_RGB</dt>
+<dd class="field-odd"><p>RGB camera queue reference for multiprocessing shared memory.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="CamerasProcessing.raise_error">
+<span class="sig-prename descclassname"><span class="pre">CamerasProcessing.</span></span><span class="sig-name descname"><span class="pre">raise_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_log</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/CamerasProcessing.html#raise_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#CamerasProcessing.raise_error" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Function that raising or putting error to list depending on test mode.</dt><dd><dl class="field-list simple">
+<dt class="field-odd">param error</dt>
+<dd class="field-odd"><p>Passed error exception.</p>
+</dd>
+<dt class="field-even">param event_log</dt>
+<dd class="field-even"><p>Event log to put error to.</p>
+</dd>
+<dt class="field-odd">param message</dt>
+<dd class="field-odd"><p>Error message.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="AppResources.html" class="btn btn-neutral float-left" title="AppResources package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="CamerasUtils.html" class="btn btn-neutral float-right" title="CamerasUtils module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Adam Dradrach 179985.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
